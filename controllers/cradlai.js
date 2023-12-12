@@ -9,9 +9,9 @@ const client = new Client(new ClientCredentials(
   'auth.lucidtech.ai',
 ));
 
-async function useCradl() {
+async function useCradl(fileURL) {
   try {
-    const fileContents = await readFile('public/img/facture.pdf');
+    const fileContents = await readFile(fileURL);
     const documentResponse = await client.createDocument(fileContents, 'application/pdf');
 
     const prediction = await client.createPrediction(
