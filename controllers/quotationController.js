@@ -1,40 +1,47 @@
 const Quotation = require('../models/Quotation');
 
 const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload  = multer({ storage: storage });
 
 const {useCradl} = require('./cradlai');
 
-// quotationID: { type: ObjectId, ref: 'User' },
-// quotationNumber: {value: String, confidence: Number},
-// groupId: String,
-// vatAmount: {value: Number, confidence: Number},
-// quotationDate: {value: String, confidence: Number},
-// supplier: {value: String, confidence: Number},
-// totalAmount: {value: Number, confidence: Number},
-// fileUrl: String,
-
-const findCradlInfos = (label) => {
+const findCradlInfos = (pred, label) => {
+    const maxObject =  pred
+    .filter(p => p.label === label)
+    .reduce((max, p) => p.confidence > max.confidence ? p : max, { confidence: -Infinity });
     return {
-        value: prediction
-        .filter(p => p.label === label)
-        .reduce((max, p) => p.confidence > max.confidence ? p : max, { confidence: -Infinity }).value,
-        confidence: prediction.find(p => p.label = 'invoice_id')?.confidence
-        .reduce((max, p) => p.confidence > max.confidence ? p : max, { confidence: -Infinity }).confidence
+        value: maxObject.value,
+        confidence: maxObject.confidence
     }
-}
+};
 
-exports.registerQuotation = async (req, res) => {
+const registerQuotation = async (req, res) => {
     try {
-        const { groupId } = req.body;
-        const file =  'public/img/facture.pdf';
-        const prediction = useCradl(file).then(res => {
-            return res.predictions;
-        });
-        const newQuotation = new Quotation(
-            {
-                quotationNumber: findCradlInfos('invoice_id'),
-            }
-        )
+        const groupId = 'essai2'; // Replace with dynamic data if needed
+        const file = 'public/img/facture.pdf'; // Replace with dynamic data if needed
 
+        const cradleResponse = await useCradl(file); // Wait for the promise to resolve
+        const prediction = cradleResponse.predictions;
+
+        const newQuotation = new Quotation({
+            groupId: groupId,
+            quotationNumber: findCradlInfos(prediction, 'invoice_id'),
+            vatAmount: findCradlInfos(prediction, 'vat_amount'),
+            quotationDate: findCradlInfos(prediction, 'invoice_date'),
+            supplier: findCradlInfos(prediction, 'supplier_name'),
+            totalAmount: findCradlInfos(prediction, 'total_amount'),
+            fileUrl: file,
+        });
+
+        await newQuotation.save();
+
+
+            // res.redirect('TODO')
+    } catch(error) {
+        console.log("error : ", error);
+        // res.status(500).send("Erreur lors de l'enregistrement d'un devis.")
     }
-}
+};
+
+module.exports = {registerQuotation};
