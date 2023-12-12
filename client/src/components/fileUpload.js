@@ -1,24 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
+
 const FileUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedPathes, setUploadedPathes] = useState([]);
+  const [resultPathes, setResultPathes] = useState([]);
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
-      console.log('Ashley look at me !', acceptedFiles);
       setUploadedFiles(acceptedFiles);      
     },
   });
 
+ useEffect(()=> {
+    if (uploadedPathes?.length) {
+      uploadedPathes.map( async path => {
+        console.log('teub',path);
+        try {
+          await axios.post('http://localhost:3031/quotations/analyze',path).then(res => {
+            const tempArray = [...resultPathes];
+            tempArray.push({file: path, result: true});
+            setResultPathes(tempArray);
+          })
+        }catch(error){
+          const tempArray = [... resultPathes];
+          tempArray.push({file: path, result: false});
+          setResultPathes(tempArray);
+          console.error('Error analyzing file', error);
+        }
+      })
+    }
+  },[uploadedPathes])
+
 const submit = async () => {
+
     const formData = new FormData();
       uploadedFiles.map((el) => {
         return formData.append('file', el);
       })
 
       try {
-        await axios.post('http://localhost:3031/upload', formData);
+        await axios.post('http://localhost:3031/upload', formData).then(res => {setUploadedPathes(res.data.files)});
         console.log('File uploaded successfully');
       } catch (error) {
         console.error('Error uploading file', error);
@@ -40,4 +63,4 @@ const submit = async () => {
     </div>
   );
 };
-export default FileUpload;
+export default FileUpload

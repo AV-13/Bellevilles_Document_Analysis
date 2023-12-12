@@ -16,12 +16,11 @@ const findCradlInfos = (pred, label) => {
     }
 };
 
-const registerQuotation = async (req, res) => {
+exports.analyzeQuotation = async (req, res) => {
     try {
-        const groupId = 'essai2'; // Replace with dynamic data if needed
-        const file = 'public/img/facture.pdf'; // Replace with dynamic data if needed
+        const {filePath, groupId} = req.body;
 
-        const cradleResponse = await useCradl(file); // Wait for the promise to resolve
+        const cradleResponse = await useCradl(filePath);
         const prediction = cradleResponse.predictions;
 
         const newQuotation = new Quotation({
@@ -31,7 +30,7 @@ const registerQuotation = async (req, res) => {
             quotationDate: findCradlInfos(prediction, 'invoice_date'),
             supplier: findCradlInfos(prediction, 'supplier_name'),
             totalAmount: findCradlInfos(prediction, 'total_amount'),
-            fileUrl: file,
+            fileUrl: filePath,
         });
 
         await newQuotation.save();
@@ -43,5 +42,3 @@ const registerQuotation = async (req, res) => {
         // res.status(500).send("Erreur lors de l'enregistrement d'un devis.")
     }
 };
-
-module.exports = {registerQuotation};
