@@ -2,6 +2,8 @@ const express = require('express');
 const { connectDB } = require('./config/database');
 const uploadRoutes = require('./routes/uploadRoutes');
 const quotationsRoutes = require('./routes/quotations');
+const groupsRoutes = require('./routes/groups');
+
 const cors = require('cors');
 
 
@@ -17,6 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/upload', uploadRoutes);
 
 app.use('/quotations', quotationsRoutes);
+
+app.use('/groups', groupsRoutes);
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

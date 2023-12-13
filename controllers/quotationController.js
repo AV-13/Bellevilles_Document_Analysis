@@ -16,11 +16,20 @@ const findCradlInfos = (pred, label) => {
     }
 };
 
+function extractPublicPath(path) {
+    const pathParts = path.split('\\');
+    const publicIndex = pathParts.indexOf('public');
+    if (publicIndex === -1) {
+        return null;
+    }
+    return pathParts.slice(publicIndex).join('/');
+}
+
 exports.analyzeQuotation = async (req, res) => {
     try {
         const {filePath, groupId} = req.body;
-
-        const cradleResponse = await useCradl(filePath);
+        const newPath = extractPublicPath(filePath);
+        const cradleResponse = await useCradl(newPath);
         const prediction = cradleResponse.predictions;
 
         const newQuotation = new Quotation({
@@ -34,11 +43,13 @@ exports.analyzeQuotation = async (req, res) => {
         });
 
         await newQuotation.save();
+        res.status(200).json({ message: 'Quotation analyzed and saved successfully' });
 
 
             // res.redirect('TODO')
     } catch(error) {
         console.log("error : ", error);
+        res.status(500).json({ error: "Erreur lors de l'enregistrement d'un devis." });
         // res.status(500).send("Erreur lors de l'enregistrement d'un devis.")
     }
 };

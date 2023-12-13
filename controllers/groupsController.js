@@ -4,11 +4,10 @@ const Group = require('../models/Groups');
 
 exports.createGroup = async (req, res) => {
     try {
-        // const { groupName } = req.body;
-        groupNameTest = "nomtest";
+        const { groupName } = req.body;
 
         const newGroup = new Group({
-            groupName: groupNameTest,
+            groupName: groupName,
         });
 
         const savedGroup = await newGroup.save();

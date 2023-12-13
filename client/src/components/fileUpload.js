@@ -7,18 +7,37 @@ const FileUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadedPathes, setUploadedPathes] = useState([]);
   const [resultPathes, setResultPathes] = useState([]);
+  const [groupCreated, setGroupCreated] = useState();
+  const [inputGroup, setInputGroup] = useState();
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
       setUploadedFiles(acceptedFiles);      
     },
   });
 
- useEffect(()=> {
+  async function createGroup(groupName) {
+    try {
+      await axios.post('http://localhost:3031/groups/create', {groupName}).then(res => setGroupCreated(res.data.group));
+    } catch(error) {
+      console.log("Create Group Error : ", error)
+    }
+  }
+
+  const today = new Date();
+  const frenchFormattedDate = today.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+  });
+
+ useEffect( ()=> {
     if (uploadedPathes?.length) {
+      const groupName = inputGroup ?? `Comparatif du ${frenchFormattedDate}`;
+      createGroup(groupName);
       uploadedPathes.map( async path => {
         console.log('teub',path);
         try {
-          await axios.post('http://localhost:3031/quotations/analyze',path).then(res => {
+          await axios.post('http://localhost:3031/quotations/analyze',{filePath: path, groupId: groupCreated}).then(res => {
             const tempArray = [...resultPathes];
             tempArray.push({file: path, result: true});
             setResultPathes(tempArray);
