@@ -1,6 +1,13 @@
 const Group = require('../models/Groups');
 
-
+exports.getAllGroups = async (req, res) => {
+    try {
+        const groups = await Group.find();
+        res.status(200).json(groups);
+    } catch(error) {
+        console.log("groupsController.getAllGroups : ", error);
+    }
+}
 
 exports.createGroup = async (req, res) => {
     try {

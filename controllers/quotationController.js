@@ -6,6 +6,17 @@ const upload  = multer({ storage: storage });
 
 const {useCradl} = require('./cradlai');
 
+
+exports.getQuotationsByGroup = async (req, res) => {
+    // TODO check how to get groupId => from front
+    const { groupId } = req.body
+    try {
+        const quotations = await Quotation.find({ groupId: groupId })
+        res.status(200).json(quotations);
+    } catch(error) {
+        console.log("quotationController.getQuotationsByGroup : ", error);
+    }
+}
 const findCradlInfos = (pred, label) => {
     const maxObject =  pred
     .filter(p => p.label === label)
@@ -34,11 +45,11 @@ exports.analyzeQuotation = async (req, res) => {
 
         const newQuotation = new Quotation({
             groupId: groupId,
-            quotationNumber: findCradlInfos(prediction, 'invoice_id'),
-            vatAmount: findCradlInfos(prediction, 'vat_amount'),
-            quotationDate: findCradlInfos(prediction, 'invoice_date'),
-            supplier: findCradlInfos(prediction, 'supplier_name'),
-            totalAmount: findCradlInfos(prediction, 'total_amount'),
+            quotationNumber: findCradlInfos(prediction, 'invoice_id') ?? "n.c",
+            vatAmount: findCradlInfos(prediction, 'vat_amount') ?? "n.c",
+            quotationDate: findCradlInfos(prediction, 'invoice_date') ?? "n.c",
+            supplier: findCradlInfos(prediction, 'supplier_name') ?? "n.c",
+            totalAmount: findCradlInfos(prediction, 'total_amount') ?? "n.c",
             fileUrl: filePath,
         });
 

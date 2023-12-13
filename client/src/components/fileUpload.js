@@ -7,7 +7,6 @@ const FileUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadedPathes, setUploadedPathes] = useState([]);
   const [resultPathes, setResultPathes] = useState([]);
-  const [groupCreated, setGroupCreated] = useState();
   const [inputGroup, setInputGroup] = useState();
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -17,9 +16,11 @@ const FileUpload = () => {
 
   async function createGroup(groupName) {
     try {
-      await axios.post('http://localhost:3031/groups/create', {groupName}).then(res => setGroupCreated(res.data.group));
+      const response = await axios.post('http://localhost:3031/groups/create', { groupName });
+      return response.data.group;
     } catch(error) {
-      console.log("Create Group Error : ", error)
+      console.log("Create Group Error : ", error);
+      return null;
     }
   }
 
@@ -33,21 +34,25 @@ const FileUpload = () => {
  useEffect( ()=> {
     if (uploadedPathes?.length) {
       const groupName = inputGroup ?? `Comparatif du ${frenchFormattedDate}`;
-      createGroup(groupName);
-      uploadedPathes.map( async path => {
-        try {
-          await axios.post('http://localhost:3031/quotations/analyze',{filePath: path, groupId: groupCreated}).then(res => {
-            const tempArray = [...resultPathes];
-            tempArray.push({file: path, result: true});
-            setResultPathes(tempArray);
-          })
-        }catch(error){
-          const tempArray = [... resultPathes];
-          tempArray.push({file: path, result: false});
-          setResultPathes(tempArray);
-          console.error('Error analyzing file', error);
+
+      createGroup(groupName).then(groupId => {
+        if (groupId) {
+          uploadedPathes.forEach(async path => {
+            try {
+              await axios.post('http://localhost:3031/quotations/analyze',{filePath: path, groupId: groupId}).then(res => {
+                const tempArray = [...resultPathes];
+                tempArray.push({file: path, result: true});
+                setResultPathes(tempArray);
+              })
+            }catch(error){
+              const tempArray = [... resultPathes];
+              tempArray.push({file: path, result: false});
+              setResultPathes(tempArray);
+              console.error('Error analyzing file', error);
+            }
+          });
         }
-      })
+      });
     }
   },[uploadedPathes])
 
