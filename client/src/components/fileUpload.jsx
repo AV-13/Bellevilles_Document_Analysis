@@ -5,9 +5,7 @@ const FileUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
-      console.log("Ashley look at me !", acceptedFiles);
       setUploadedFiles(acceptedFiles);
-      // Call your backend API endpoint to upload files
     },
   });
   return (

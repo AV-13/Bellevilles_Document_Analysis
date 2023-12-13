@@ -22,7 +22,7 @@ async function useCradl() {
     return prediction;
 
   } catch (error) {
-    console.log("error zbi : ", error);
+    console.log("error using Cradl : ", error);
   }
 
 }

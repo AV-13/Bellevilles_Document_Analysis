@@ -35,7 +35,6 @@ const FileUpload = () => {
       const groupName = inputGroup ?? `Comparatif du ${frenchFormattedDate}`;
       createGroup(groupName);
       uploadedPathes.map( async path => {
-        console.log('teub',path);
         try {
           await axios.post('http://localhost:3031/quotations/analyze',{filePath: path, groupId: groupCreated}).then(res => {
             const tempArray = [...resultPathes];
