@@ -16,12 +16,20 @@ const findCradlInfos = (pred, label) => {
     }
 };
 
-const registerQuotation = async (req, res) => {
-    try {
-        const groupId = 'essai2'; // Replace with dynamic data if needed
-        const file = 'public/img/facture.pdf'; // Replace with dynamic data if needed
+function extractPublicPath(path) {
+    const pathParts = path.split('\\');
+    const publicIndex = pathParts.indexOf('public');
+    if (publicIndex === -1) {
+        return null;
+    }
+    return pathParts.slice(publicIndex).join('/');
+}
 
-        const cradleResponse = await useCradl(file); // Wait for the promise to resolve
+exports.analyzeQuotation = async (req, res) => {
+    try {
+        const {filePath, groupId} = req.body;
+        const newPath = extractPublicPath(filePath);
+        const cradleResponse = await useCradl(newPath);
         const prediction = cradleResponse.predictions;
 
         const newQuotation = new Quotation({
@@ -31,17 +39,17 @@ const registerQuotation = async (req, res) => {
             quotationDate: findCradlInfos(prediction, 'invoice_date'),
             supplier: findCradlInfos(prediction, 'supplier_name'),
             totalAmount: findCradlInfos(prediction, 'total_amount'),
-            fileUrl: file,
+            fileUrl: filePath,
         });
 
         await newQuotation.save();
+        res.status(200).json({ message: 'Quotation analyzed and saved successfully' });
 
 
             // res.redirect('TODO')
     } catch(error) {
         console.log("error : ", error);
+        res.status(500).json({ error: "Erreur lors de l'enregistrement d'un devis." });
         // res.status(500).send("Erreur lors de l'enregistrement d'un devis.")
     }
 };
-
-module.exports = {registerQuotation};

@@ -16,11 +16,11 @@ async function useCradl() {
 
     const prediction = await client.createPrediction(
       documentResponse.documentId,
-      'las:model:fab26165f910442caa01674f87a463a1'
+      'las:model:3d5096b8ef0846bc849dd8bfc38adf65'
     );
-
+      // dev model 'las:model:fab26165f910442caa01674f87a463a1'
     return prediction;
-  
+
   } catch (error) {
     console.log("error zbi : ", error);
   }
