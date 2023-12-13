@@ -25,18 +25,18 @@ const DisplayGroups = () => {
 
       if (!groups?.length) return <p>Ca charge...</p>;
 
-        return (
+      return (
             <>
-               <select name="groups" onChange={(e) => setSelectedGroup(e.target.value)} >
+               <select name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
                     <option value={""} >Sélectionner un groupe</option>
                     {groups.map((g) => {
                         return(
-                            <option value={g} key={g._id}>{g.groupName}</option>
+                            <option value={g._id} key={g._id}>{g.groupName}</option>
                         )
                     }
                     )}
                </select>
-               {selectedGroup && <GroupTable group={selectedGroup}/>}
+               {selectedGroup && <GroupTable groupSelId={selectedGroup} groups={groups}/>}
             </>
         )
 }

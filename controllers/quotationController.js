@@ -8,8 +8,9 @@ const {useCradl} = require('./cradlai');
 
 
 exports.getQuotationsByGroup = async (req, res) => {
-    // TODO check how to get groupId => from front
-    const { groupId } = req.body
+    const { groupId } = req.query
+
+    console.log('enfin chef !',req);
     try {
         const quotations = await Quotation.find({ groupId: groupId })
         res.status(200).json(quotations);
@@ -20,10 +21,17 @@ exports.getQuotationsByGroup = async (req, res) => {
 const findCradlInfos = (pred, label) => {
     const maxObject =  pred
     .filter(p => p.label === label)
-    .reduce((max, p) => p.confidence > max.confidence ? p : max, { confidence: -Infinity });
-    return {
+    .reduce((max, p) => p.confidence > max.confidence ? p : max, { confidence: -Infinity }); 
+    if (maxObject?.value) {
+        return {
         value: maxObject.value,
         confidence: maxObject.confidence
+        }
+    } else {
+        return {
+            value: null,
+            confidence: 0
+        }
     }
 };
 
@@ -45,22 +53,19 @@ exports.analyzeQuotation = async (req, res) => {
 
         const newQuotation = new Quotation({
             groupId: groupId,
-            quotationNumber: findCradlInfos(prediction, 'invoice_id') ?? "n.c",
-            vatAmount: findCradlInfos(prediction, 'vat_amount') ?? "n.c",
-            quotationDate: findCradlInfos(prediction, 'invoice_date') ?? "n.c",
-            supplier: findCradlInfos(prediction, 'supplier_name') ?? "n.c",
-            totalAmount: findCradlInfos(prediction, 'total_amount') ?? "n.c",
+            quotationNumber: findCradlInfos(prediction, 'invoice_id'),
+            vatAmount: findCradlInfos(prediction, 'vat_amount'),
+            quotationDate: findCradlInfos(prediction, 'invoice_date'),
+            supplier: findCradlInfos(prediction, 'supplier_name'),
+            totalAmount: findCradlInfos(prediction, 'total_amount'),
             fileUrl: filePath,
         });
 
         await newQuotation.save();
         res.status(200).json({ message: 'Quotation analyzed and saved successfully' });
 
-
-            // res.redirect('TODO')
     } catch(error) {
         console.log("error : ", error);
         res.status(500).json({ error: "Erreur lors de l'enregistrement d'un devis." });
-        // res.status(500).send("Erreur lors de l'enregistrement d'un devis.")
     }
 };

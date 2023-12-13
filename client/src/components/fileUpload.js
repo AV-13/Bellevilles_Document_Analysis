@@ -62,14 +62,16 @@ const submit = async () => {
       uploadedFiles.map((el) => {
         return formData.append('file', el);
       })
-
-      try {
-        await axios.post('http://localhost:3031/upload', formData).then(res => {setUploadedPathes(res.data.files)});
-        console.log('File uploaded successfully');
-      } catch (error) {
-        console.error('Error uploading file', error);
-      }
-    };
+    
+    if (uploadedFiles?.length) {
+        try {
+          await axios.post('http://localhost:3031/upload', formData).then(res => {setUploadedPathes(res.data.files)});
+          console.log('File uploaded successfully');
+        } catch (error) {
+          console.error('Error uploading file', error);
+        }
+      };
+    }
 
   return (
     <div>
