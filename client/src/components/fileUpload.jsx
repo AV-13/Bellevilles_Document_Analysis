@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { styles } from "../themes";
+import Button from "./button";
 const FileUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const { getRootProps, getInputProps } = useDropzone({
@@ -14,8 +15,7 @@ const FileUpload = () => {
     <div style={localStyles.fileUploadContainer}>
       <div {...getRootProps()} style={localStyles.dropzone}>
         <input {...getInputProps()} />
-        <p>Drag and drop files here or click to browse.</p>
-      </div>
+        <Button/>
       <ul style={localStyles.fileList}>
         {uploadedFiles.map((file) => (
           <li style={localStyles.li} key={file.name}>
@@ -23,6 +23,7 @@ const FileUpload = () => {
           </li>
         ))}
       </ul>
+      </div>
     </div>
   );
 };
@@ -34,6 +35,7 @@ const localStyles = {
   },
   dropzone: {
     border: "2px dashed  #3498db",
+    backgroundColor: styles.linearColor3,
     borderRadius: "4px",
     ...styles.p20,
     cursor: "pointer",
