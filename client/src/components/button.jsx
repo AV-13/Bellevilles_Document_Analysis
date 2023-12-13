@@ -14,9 +14,8 @@ const Button = () => {
 
 const localStyles = {
   button: {
-    color: styles.white,
-    background:
-      "linear-gradient(rgba(255, 1, 25), rgba(255, 255, 255, 0.55))",
+    color: "rgba(149, 157, 165)",
+    background: " rgba(255, 255, 255)",
 
     ...styles.p30,
     display: "inline-flex",
