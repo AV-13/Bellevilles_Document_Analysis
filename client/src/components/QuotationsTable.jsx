@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Modal from './Modal';
 
 import './QuotationsTable.css';
 
@@ -7,51 +8,92 @@ const QuotationsTable = ({quotations = []}) => {
     const [sortedQuotations, setSortedQuotations] = useState(quotations);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
+    const [showModal, setShowModal] = useState(false);
+    const [groupToEdit, setGroupToEdit] = useState(null);
+
+
+    useEffect(() => {
+        sortData('createdAt');
+    }, [quotations]);
+
+    const fileBASEURL = process.env.NODE_ENV === 'development' 
+    ? "http://localhost:3031/" 
+    : "./";
+
     const sortData = (key) => {
         let direction = 'ascending';
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-
-        const sortedData = [...quotations].sort((a, b) => {
-            if (a[key]['value'] < b[key]['value']) {
-                return direction === 'ascending' ? -1 : 1;
-            }
-            if (a[key]['value'] > b[key]['value']) {
-                return direction === 'ascending' ? 1 : -1;
-            }
-            return 0;
-        });
-
+    
+        let sortedData;
+        if (key === 'groupId') {
+            sortedData = [...quotations].sort((a, b) => {
+                if (a[key]['groupName'] < b[key]['groupName']) {
+                    return direction === 'ascending' ? -1 : 1;
+                }
+                if (a[key]['groupName'] > b[key]['groupName']) {
+                    return direction === 'ascending' ? 1 : -1;
+                }
+                return 0;
+            });
+        } else {
+            sortedData = [...quotations].sort((a, b) => {
+                if (a[key]['value'] < b[key]['value']) {
+                    return direction === 'ascending' ? -1 : 1;
+                }
+                if (a[key]['value'] > b[key]['value']) {
+                    return direction === 'ascending' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
         setSortedQuotations(sortedData);
         setSortConfig({ key, direction });
     };
 
+    
+    const displayArrow = (key) => {
+        if (sortConfig.key === key) {
+            if (sortConfig.direction === 'ascending') {
+                return <>&#8593;</>;
+            } else {
+                return <>&#8595;</>;
+            }
+        }
+    };
 
     if (!quotations?.length) return <p>Ca charge...</p>;
 
     const frenchFormattedDate = (newDate) => {
     const dateDate = new Date(newDate);
-    return dateDate.toLocaleDateString('fr-FR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    })
+        return dateDate.toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        })
     };
 
+    const openModalWithContent = (quot) => {
+        setGroupToEdit(<p>{quot}</p>);
+        setShowModal(true);
+    };
+
+
+
     if (!quotations.length) return <p>Pas de devis à afficher</p>;
-console.log(sortedQuotations)
+
     return (
         <>
             <table>
                     <thead>
                         <tr>
-                        <th onClick={() => sortData('createdAt')}>Date d'upload</th>
-                        <th onClick={() => sortData('quotationNumber')}>Devis #</th>
-                        <th onClick={() => sortData('supplier')}>Fournisseur</th>
-                        <th onClick={() => sortData('groupId')}>Groupe</th>
-                        <th onClick={() => sortData('vatAmount')}>TVA</th>
-                        <th onClick={() => sortData('totalAmount')}>Total</th>
+                        <th onClick={() => sortData('createdAt')}>Date d'upload {displayArrow('createdAt')}</th>
+                        <th onClick={() => sortData('quotationNumber')}>Devis # {displayArrow('quotationNumber')}</th>
+                        <th onClick={() => sortData('supplier')}>Fournisseur {displayArrow('supplier')}</th>
+                        <th onClick={() => sortData('groupId')}>Groupe {displayArrow('groupId')}</th>
+                        <th onClick={() => sortData('vatAmount')}>TVA {displayArrow('vatAmount')}</th>
+                        <th onClick={() => sortData('totalAmount')}>Total {displayArrow('totalAmount')}</th>
                             <th>Aperçu</th>
                             <th>Editer</th>
                         </tr>
@@ -81,14 +123,14 @@ console.log(sortedQuotations)
                                 </td>
                                 <td>
                                     <embed
-                                        src={'./' + d.fileUrl.replace(/\\/g, '/')}
+                                        src={`${fileBASEURL}${d.fileUrl}`}
                                         type="application/pdf"
                                         width="100%"
                                         height="100"
                                     />
                                 </td>
                                 <td>
-                                    Editer
+                                <button onClick={() => openModalWithContent(d.totalAmount.value)}>Editer</button>
                                 </td>
                             </tr>
 
@@ -96,6 +138,9 @@ console.log(sortedQuotations)
                     })}
                 </tbody>
             </table>
+            {showModal && <Modal show={showModal} onClose={() => setShowModal(false)}>
+                {groupToEdit}
+            </Modal>}
         </>
     )
 }

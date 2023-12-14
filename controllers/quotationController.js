@@ -61,7 +61,7 @@ exports.analyzeQuotation = async (req, res) => {
             quotationDate: findCradlInfos(prediction, 'invoice_date'),
             supplier: findCradlInfos(prediction, 'supplier_name'),
             totalAmount: findCradlInfos(prediction, 'total_amount'),
-            fileUrl: newPath,
+            fileUrl:  newPath.replace("public\\", ""),
         });
 
         await newQuotation.save();

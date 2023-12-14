@@ -4,31 +4,35 @@ import axios from 'axios';
 import QuotationsTable from './QuotationsTable';
 
 
-const QuotationsPage = ({groupSelId, groups = [] }) => {
+const QuotationsPage = () => {
 
 
     const [devis, setDevis] = useState([]);
+    const [filteredDevis, setFilteredDevis] = useState([]);
     const [groups, setGroups] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedGroup, setSelectedGroup] = useState();
 
     async function fetchDevis() {
-        try {
-            const response = await axios.get('http://localhost:3031/quotations/getAllQuotations');
-        setDevis(response.data);
-    } catch(error) {
-        console.log("Fetch devis error : ", error);
-        return null;
-        }
+        return axios.get('http://localhost:3031/quotations/getAllQuotations')
+            .then(response => {
+                setDevis(response.data);
+            })
+            .catch(error => {
+                console.log("Fetch devis error : ", error);
+                throw error;
+            });
     }
 
     async function fetchGroups() {
-        try {
-            const response = await axios.get('http://localhost:3031/groups/getgroups');
-            setGroups(response.data);
-    } catch(error) {
-        console.log("Fetch groups error : ", error);
-        return null;
-        }
+        return axios.get('http://localhost:3031/groups/getgroups')
+            .then(response => {
+                setGroups(response.data);
+            })
+            .catch(error => {
+                console.log("Fetch groups error : ", error);
+                throw error;
+            });
     }
 
     useEffect( ()=> {
@@ -43,12 +47,28 @@ const QuotationsPage = ({groupSelId, groups = [] }) => {
         });
       },[]);
 
-      if (isLoading) return <p>Ca charge...</p>;
+    useEffect( ()=> {
+        if (selectedGroup && devis) {
+            const newArray = devis.filter(d => d.groupId._id === selectedGroup);
+            setFilteredDevis(newArray);
+        } else {
+            setFilteredDevis([... devis]);
+        }
+      },[selectedGroup, devis]);
 
       return (
-            <>
-                <h2>{group?.groupName}</h2>
-                <QuotationsTable quotations={devis} />
+            isLoading ? <p>Ca charge...</p>
+            : <>
+                <select name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
+                    <option value="" >Sélectionner un groupe</option>
+                    {groups?.map((g) => {
+                        return(
+                            <option value={g._id} key={g._id}>{g.groupName}</option>
+                        )
+                    }
+                    )}
+               </select>
+                <QuotationsTable quotations={filteredDevis} />
             </>
         )
 }
