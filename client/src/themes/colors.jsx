@@ -32,7 +32,7 @@ const colors = {
   inputFocusColor: "#9610FF14",
   tranparent: "#00000000",
   darkBg: "#181A20",
-  redColor: "#F75555",
+  redColor: "#D63230",
   lightRed: "#FF5C74",
   lightGray: "#7575751F",
   orange: "#FB9400",
