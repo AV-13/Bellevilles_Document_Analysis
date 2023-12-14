@@ -9,6 +9,8 @@ const quotationController = require('../controllers/quotationController');
 router.post('/analyze', quotationController.analyzeQuotation);
 // TODO GET request get all quotatiobs by group id
 router.get('/getQuotationsByGroup', quotationController.getQuotationsByGroup);
+router.get('/getAllQuotations', quotationController.getAllQuotations);
+
 
 
 module.exports = router;

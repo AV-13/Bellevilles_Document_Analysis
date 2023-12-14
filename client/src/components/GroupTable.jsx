@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+import QuotationsTable from './QuotationsTable';
+
 
 const GroupTable = ({groupSelId, groups = [] }) => {
 
@@ -33,29 +35,10 @@ const GroupTable = ({groupSelId, groups = [] }) => {
 
       if (!devis?.length) return <p>Ca charge...</p>;
 
-        return (
+      return (
             <>
                 <h2>{group?.groupName}</h2>
-                <table>
-                    <tbody>
-                        {devis.map((d,i) => {
-                            return (
-                                <tr key={`${d.supplier.value}${i}`}>
-                                    <td className={d.quotationNumber.confidence < 0.85 ? "rouge" : ""}>
-                                        {d.quotationNumber.value ?? "n.c"}
-                                    </td>
-                                    <td>
-                                        {d.supplier.value ?? "n.c"}
-                                    </td>
-                                    <td>
-                                        {d.totalAmount.value ?? "n.c"}
-                                    </td>
-                                </tr>
-
-                            )
-                        })}
-                    </tbody>
-                </table>
+                <QuotationsTable quotations={devis} />
             </>
         )
 }

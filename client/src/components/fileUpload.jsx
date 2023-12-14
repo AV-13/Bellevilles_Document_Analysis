@@ -142,6 +142,8 @@ const submit = async () => {
                   </li>
                 ))}
               </ul>
+              <button onClick={submit}>Envoyer</button>
+
             </>
           ) : (
             <>

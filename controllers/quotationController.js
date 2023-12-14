@@ -13,6 +13,9 @@ exports.getQuotationsByGroup = async (req, res) => {
     console.log('enfin chef !',req);
     try {
         const quotations = await Quotation.find({ groupId: groupId })
+        .populate({
+            path: "groupId",
+          });
         res.status(200).json(quotations);
     } catch(error) {
         console.log("quotationController.getQuotationsByGroup : ", error);
@@ -58,7 +61,7 @@ exports.analyzeQuotation = async (req, res) => {
             quotationDate: findCradlInfos(prediction, 'invoice_date'),
             supplier: findCradlInfos(prediction, 'supplier_name'),
             totalAmount: findCradlInfos(prediction, 'total_amount'),
-            fileUrl: filePath,
+            fileUrl: newPath,
         });
 
         await newQuotation.save();
@@ -67,5 +70,18 @@ exports.analyzeQuotation = async (req, res) => {
     } catch(error) {
         console.log("error : ", error);
         res.status(500).json({ error: "Erreur lors de l'enregistrement d'un devis." });
+    }
+};
+
+exports.getAllQuotations = async (req, res) => {
+
+    try {
+        const quotations = await Quotation.find()
+        .populate({
+            path: "groupId",
+          });
+        res.status(200).json(quotations);
+    } catch(error) {
+        console.log("quotationController.getAllQuotations : ", error);
     }
 };
