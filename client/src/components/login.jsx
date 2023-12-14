@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -14,6 +16,8 @@ function LoginForm() {
             // Gérer les erreurs ici
             console.error("error baby", error)
         }
+        console.log("Formulaire envoyé au backend");
+        navigate('/');
     };
 
     return (

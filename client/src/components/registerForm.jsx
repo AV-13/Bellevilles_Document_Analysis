@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 function RegisterForm() {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -19,15 +21,16 @@ function RegisterForm() {
 
         try {
           console.log("form data :", formData);
-          await axios.post('http://localhost:3031/user/register', formData , {
+            axios.post('http://localhost:3031/user/register', formData , {
             headers: {
                 'Content-Type': 'multipart/form-data',
-            }}).then(res => console.log("response : ", res));
-            
+            }})
         } catch (error) {
           console.error("error baby", error)
             // Gérer les erreurs ici
         }
+        console.log("Formulaire envoyé au backend");
+        navigate('/login');
     };
 
     return (

@@ -9,7 +9,7 @@ const {isAuthentificated, isLoggedIn} = require ('../middleware/auth');
 const authController = require ('../controllers/authController');
 
 
-router.post('/register', upload.single('avatar'), isLoggedIn, authController.register);
+router.post('/register', upload.single('avatar'), authController.register);
 
 router.post('/login', isLoggedIn, authController.login);
 

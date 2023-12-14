@@ -1,24 +1,21 @@
-import FileUpload from "./components/fileUpload";
-import Header from "./components/header";
-import Footer from "./components/footer";
-import Body from "./components/body";
-import DisplayGroups from "./components/DisplayGroups";
-import Login from './components/login'
-import Register from './components/registerForm'
+import HomePage from './components/homePage';
+import LoginPage from './components/loginPage';
+import RegisterPage from './components/registerPage';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 
 function App() {
   return (
     <div className="App">
-      <Header/>
-      <Body/>
-      <FileUpload />
-      <DisplayGroups />
-      <Footer/>
-      <Login/>
-      <Register/>
+      <Router>
+        <Routes>
+          <Route path="/" exact element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
-
 
 export default App;

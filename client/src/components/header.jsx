@@ -1,30 +1,31 @@
 import React from "react";
 import { styles } from "../themes";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <header style={localStyles.header}>
       <div style={localStyles.logo}>
-        <a href="#" style={localStyles.logoLink}>
+        <Link to="/" style={localStyles.logoLink}>
           Mon Logo
-        </a>
+        </Link>
       </div>
       <nav style={localStyles.nav}>
         <ul style={localStyles.navList}>
           <li style={localStyles.navItem}>
-            <a href="#" style={localStyles.navLink}>
+            <Link to="/" style={localStyles.navLink}>
               Accueil
-            </a>
+            </Link>
           </li>
           <li style={localStyles.navItem}>
-            <a href="#" style={localStyles.navLink}>
-              Services
-            </a>
+            <Link to="/login" style={localStyles.navLink}>
+              Connexion
+            </Link>
           </li>
           <li style={localStyles.navItem}>
-            <a href="#" style={localStyles.navLink}>
-              À propos
-            </a>
+            <Link to="/register" style={localStyles.navLink}>
+              Inscription
+            </Link>
           </li>
           <li style={localStyles.navItem}>
             <a href="#" style={localStyles.navLink}>
