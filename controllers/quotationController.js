@@ -6,13 +6,32 @@ const upload  = multer({ storage: storage });
 
 const {useCradl} = require('./cradlai');
 
+
+exports.getQuotationsByGroup = async (req, res) => {
+    const { groupId } = req.query
+
+    console.log('enfin chef !',req);
+    try {
+        const quotations = await Quotation.find({ groupId: groupId })
+        res.status(200).json(quotations);
+    } catch(error) {
+        console.log("quotationController.getQuotationsByGroup : ", error);
+    }
+}
 const findCradlInfos = (pred, label) => {
     const maxObject =  pred
     .filter(p => p.label === label)
-    .reduce((max, p) => p.confidence > max.confidence ? p : max, { confidence: -Infinity });
-    return {
+    .reduce((max, p) => p.confidence > max.confidence ? p : max, { confidence: -Infinity }); 
+    if (maxObject?.value) {
+        return {
         value: maxObject.value,
         confidence: maxObject.confidence
+        }
+    } else {
+        return {
+            value: null,
+            confidence: 0
+        }
     }
 };
 
@@ -45,11 +64,8 @@ exports.analyzeQuotation = async (req, res) => {
         await newQuotation.save();
         res.status(200).json({ message: 'Quotation analyzed and saved successfully' });
 
-
-            // res.redirect('TODO')
     } catch(error) {
         console.log("error : ", error);
         res.status(500).json({ error: "Erreur lors de l'enregistrement d'un devis." });
-        // res.status(500).send("Erreur lors de l'enregistrement d'un devis.")
     }
 };

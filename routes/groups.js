@@ -8,4 +8,6 @@ const groupsController = require('../controllers/groupsController');
 
 router.post('/create', groupsController.createGroup);
 
+// TODO GET all group Request
+router.get('/getgroups', groupsController.getAllGroups);
 module.exports = router;
