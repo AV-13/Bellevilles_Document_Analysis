@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
-
+import { FaMagnifyingGlass } from "react-icons/fa6";
 import './QuotationsTable.css';
 
 const QuotationsTable = ({quotations = []}) => {
@@ -9,7 +9,7 @@ const QuotationsTable = ({quotations = []}) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
     const [showModal, setShowModal] = useState(false);
-    const [groupToEdit, setGroupToEdit] = useState(null);
+    const [content, setContent] = useState(null);
 
 
     useEffect(() => {
@@ -74,8 +74,23 @@ const QuotationsTable = ({quotations = []}) => {
         })
     };
 
-    const openModalWithContent = (quot) => {
-        setGroupToEdit(<p>{quot}</p>);
+    const generatePreview = (file) => {
+        return <embed
+        src={`${fileBASEURL}${file}`}
+        type="application/pdf"
+        className="img-container"
+        />
+    } 
+
+    const openModalWithContent = (modalcontent, modalType) => {
+        let contenu;
+        if (modalType === 'edit') {
+            contenu = modalcontent;
+        } else if (modalType === 'preview') {
+            console.log("ctnt : ", modalcontent);
+            contenu = generatePreview(modalcontent);
+        }
+        setContent(contenu);
         setShowModal(true);
     };
 
@@ -122,15 +137,10 @@ const QuotationsTable = ({quotations = []}) => {
                                     {d.totalAmount?.value ?? "n.c"}
                                 </td>
                                 <td>
-                                    <embed
-                                        src={`${fileBASEURL}${d.fileUrl}`}
-                                        type="application/pdf"
-                                        width="100%"
-                                        height="100"
-                                    />
+                                <a onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>                            
                                 </td>
                                 <td>
-                                <button onClick={() => openModalWithContent(d.totalAmount.value)}>Editer</button>
+                                <button onClick={() => openModalWithContent(d.totalAmount.value, 'edit')}>Editer</button>
                                 </td>
                             </tr>
 
@@ -139,7 +149,7 @@ const QuotationsTable = ({quotations = []}) => {
                 </tbody>
             </table>
             {showModal && <Modal show={showModal} onClose={() => setShowModal(false)}>
-                {groupToEdit}
+                {content}
             </Modal>}
         </>
     )

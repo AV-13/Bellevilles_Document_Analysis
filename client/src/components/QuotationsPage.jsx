@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import QuotationsTable from './QuotationsTable';
-
+import Header from './header';
+import Body from './body';
+import Footer from './footer';
 
 const QuotationsPage = () => {
 
@@ -57,8 +59,11 @@ const QuotationsPage = () => {
       },[selectedGroup, devis]);
 
       return (
+        
             isLoading ? <p>Ca charge...</p>
             : <>
+            <Header/>
+            <Body/>
                 <select name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
                     <option value="" >Sélectionner un groupe</option>
                     {groups?.map((g) => {
@@ -69,6 +74,7 @@ const QuotationsPage = () => {
                     )}
                </select>
                 <QuotationsTable quotations={filteredDevis} />
+            <Footer/>
             </>
         )
 }

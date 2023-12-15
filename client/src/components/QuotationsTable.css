@@ -36,3 +36,11 @@ td {
 table, th, td {
     border: 1px solid #ddd;
 }
+.modal {
+    width: 80%;
+    height:80%
+}
+.img-container {
+    width:100%;
+    height:90%;
+}
