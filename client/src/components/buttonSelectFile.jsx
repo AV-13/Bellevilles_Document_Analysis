@@ -16,7 +16,6 @@ const localStyles = {
   button: {
     color: "rgba(149, 157, 165)",
     background: " rgba(255, 255, 255)",
-
     ...styles.p30,
     display: "inline-flex",
     alignItems: "center",
