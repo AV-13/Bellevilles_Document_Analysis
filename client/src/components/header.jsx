@@ -50,7 +50,7 @@ console.log('CTX', context.isLoggedIn);
           </>
           }
           <li style={localStyles.navItem}>
-            <a href="#" style={localStyles.navLink}>
+            <a href="/tableaudevis" style={localStyles.navLink}>
               {/* TODO LISTE */}
               Historique
             </a>

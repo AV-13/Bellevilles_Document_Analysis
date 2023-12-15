@@ -9,7 +9,6 @@ const Body = () => {
         <h1 style={localStyles.title}>Comparateur de devis</h1>
         <p>On trouve la meilleur option pour vous en ligne et gratuitement</p>
       </div>
-        <FileUpload />
     </div>
   );
 };

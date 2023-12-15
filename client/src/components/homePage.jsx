@@ -12,7 +12,6 @@ const HomePage = () => {
       <Header/>
       <Body/>
       <FileUpload />
-      <DisplayGroups />
       <Footer/>
     </>
   )
