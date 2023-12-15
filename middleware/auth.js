@@ -1,5 +1,5 @@
 function isLoggedIn(req, res, next) {
-  if(req.isAuthenticated()) {
+  if(req.session.currentUser) {
     next();
   } else {
   res.status(401).json({ message: "Unauthorized"})

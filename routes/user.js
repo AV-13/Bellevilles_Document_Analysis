@@ -5,13 +5,24 @@ const storage = multer.memoryStorage();
 const upload = multer({storage: storage });
 const userController = require ("../controllers/userController");
 const User = require ("../models/User");
-const {isAuthentificated, isLoggedIn} = require ('../middleware/auth');
+const { isLoggedIn } = require ('../middleware/auth');
 const authController = require ('../controllers/authController');
 
+// Route to check in react if a user is logged in
+router.get('/isUserLoggedIn', (req, res) => { 
+  req.isAuthenticated() ? res.send({ isLoggedIn: true}) : res.send({ isLoggedIn: false })
+});
 
+router.get("/me", isLoggedIn, (req, res, next) => {
+  User.findById(req.session.currentUser._id)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch(next);
+});
 router.post('/register', upload.single('avatar'), authController.register);
 
-router.post('/login', isLoggedIn, authController.login);
+router.post('/login' , authController.login);
 
 router.get('/logout', authController.logout);
 

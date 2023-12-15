@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { UserContext } from '../App';
 
 function LoginForm() {
+    const [context, setContext] = useContext(UserContext);
+
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         try {
-            await axios.post('http://localhost:3031/user/login', { username, password }).then(res => console.log("response : ", res));
-            // Gérer la réponse ici, par exemple redirection ou affichage de message
+            axios.post('http://localhost:3031/user/login', { username, password }, { withCredentials: true }).then((data) => {
+            setContext({ uesrInfo: data, isLoggedIn: true });
+            navigate("/")
+            })
         } catch (error) {
-            // Gérer les erreurs ici
-            console.error("error baby", error)
+            console.error("Erreur lors de la connexion : ", error);
         }
-        console.log("Formulaire envoyé au backend");
-        navigate('/');
     };
 
     return (
