@@ -17,7 +17,7 @@ const Modal = React.forwardRef(({ show, children, onClose }, modalRef) => {
         };
     }, []);
     const handleBackdropClick = (event) => {
-        if (modalRef.current && !modalRef.current.contains(event.target)) {
+        if (modalRef?.current && !modalRef.current.contains(event.target)) {
             onClose();
         }
     };
