@@ -6,11 +6,18 @@ import { styles } from "../themes";
 import Button from "./buttonSelectFile";
 import { IoCloudUploadOutline, IoClose } from "react-icons/io5";
 import ButtonSubmit from "./buttonSubmit";
+import Modal from './Modal';
+
+import './fileUpload.css';
 
 const FileUpload = () => {
+  const [filesToUpload, setFilesToUpload] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [resultPathes, setResultPathes] = useState([]);
   const [inputGroup, setInputGroup] = useState();
+
+  
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -33,7 +40,7 @@ const FileUpload = () => {
       } else {
         const fileReader = new FileReader();
         fileReader.onload = (event) => {
-          setUploadedFiles(prev => [...prev, { type: "image", data: event.target.result, file }]);
+          setFilesToUpload(prev => [...prev, { type: "image", data: event.target.result, file }]);
         };
         fileReader.onerror = (error) => {
           console.error("Error reading file:", error);
@@ -41,15 +48,15 @@ const FileUpload = () => {
         fileReader.readAsDataURL(file);
       }
     });
-    setUploadedFiles(prev => [...prev, ...newUploadedFiles.filter(f => f)]);
+    setFilesToUpload(prev => [...prev, ...newUploadedFiles.filter(f => f)]);
   };
   
 
   const removeFile = (event, index) => {
     event.stopPropagation();
-    const updatedFiles = [...uploadedFiles];
+    const updatedFiles = [...filesToUpload];
     updatedFiles.splice(index, 1);
-    setUploadedFiles(updatedFiles);
+    setFilesToUpload(updatedFiles);
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -76,42 +83,40 @@ const FileUpload = () => {
                 filePath: path,
                 groupId: groupId,
               });
-              const tempArray = [...resultPathes];
-              tempArray.push({ file: path, result: true });
-              setResultPathes(tempArray);
+              setResultPathes(prevPathes => [...prevPathes, { file: path, result: true }]);
             } catch (error) {
-              const tempArray = [...resultPathes];
-              tempArray.push({ file: path, result: false });
-              setResultPathes(tempArray);
+              setResultPathes(prevPathes => [...prevPathes, { file: path, result: false }]);
               console.error("Error analyzing file", error);
             }
           });
   
           await Promise.all(analyzePromises);
   
-          setUploadedFiles([]);
-          navigate("/tableaudevis");
+          setFilesToUpload([]);
+          // navigate("/tableaudevis");
         }
       } catch (error) {
         console.error("Error in creating group:", error);
       }
     }
   } 
-
+console.log('RP',resultPathes)
   const submit = async () => {
+    setShowModal(true);
     const formData = new FormData();
-    uploadedFiles.forEach(({ file }) => {
+    filesToUpload.forEach(({ file }) => {
       if (file) {
         formData.append("file", file);
       }
     });
 
-    if (uploadedFiles?.length) {
+    if (filesToUpload?.length) {
       try {
         await axios
           .post("http://localhost:3031/upload", formData)
           .then((res) => {
             console.log("Files uploaded successfully");
+            setUploadedFiles(res.data.files);
             return processUploadedFiles(res.data.files);
           });
       } catch (error) {
@@ -124,11 +129,11 @@ const FileUpload = () => {
     <div style={localStyles.fileUploadContainer}>
       <div {...getRootProps()} style={localStyles.dropzone}>
         <input {...getInputProps()} />
-        {uploadedFiles.length > 0 ? (
+        {filesToUpload.length > 0 ? (
           <>
             <Button />
             <ul style={localStyles.fileList}>
-              {uploadedFiles.map((file, index) => (
+              {filesToUpload.map((file, index) => (
                 <li style={localStyles.li} key={index}>
                   {file.type === "image" && (
                     <>
@@ -172,6 +177,43 @@ const FileUpload = () => {
         )}
       </div>
       <ButtonSubmit submit={submit} />
+      {showModal && <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <div>
+          <table>
+            <thead>
+              <th>
+                Nom
+              </th>
+              <th>
+                Upload
+              </th>
+              <th>
+                Analyze
+              </th>
+            </thead>
+          {filesToUpload?.map((f,i)=>{
+            return(
+              <tr key={`rown${i}`}>
+                <td>
+                  {f.file.path}
+                </td>
+                <td>
+                  {uploadedFiles.some(fi => fi.includes(f.file.path)) ? "OK" : "X"}
+                </td>
+                <td>
+                  {
+                  !resultPathes.some(fi => fi.file.includes(f.file.path)) ?
+                  "pending"
+                  : resultPathes.find(fi => fi.file.includes(f.file.path))?.result ? "OK" : "X"}
+                </td>
+              </tr>
+            )
+
+          })}
+
+          </table>
+        </div>
+            </Modal>}
     </div>
   );
 };
