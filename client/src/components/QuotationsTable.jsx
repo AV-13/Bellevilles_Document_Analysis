@@ -77,12 +77,102 @@ const QuotationsTable = ({quotations = []}) => {
     };
 
     const generatePreview = (file) => {
-        return <embed
-        src={`${fileBASEURL}${file}`}
-        type="application/pdf"
-        className="img-container"
-        />
-    } 
+        // Construire l'URL complète du fichier
+        const fileUrl = `${fileBASEURL}${file}`;
+    
+        // Vérifier l'extension du fichier pour déterminer son type
+        const fileExtension = file.split('.').pop().toLowerCase();
+    
+        if (fileExtension === 'pdf') {
+            // Si le fichier est un PDF, utilisez la balise embed
+            return <embed src={fileUrl} type="application/pdf" className="img-container-preview" />;
+        } else {
+            // Pour les autres types (images), utilisez la balise img
+            return <img src={fileUrl} alt="Preview" className="img-container-preview" />;
+        }
+    };
+    const generateUpdateForm = (file) => {
+        console.log("file : ", file);
+        // Construire l'URL complète du fichier
+        const fileUrl = `${fileBASEURL}${file.fileUrl}`;
+        console.log("fileUrl: ", fileUrl);
+    
+        // Vérifier l'extension du fichier pour déterminer son type
+        const fileExtension = file.fileUrl.split('.').pop().toLowerCase();
+    
+        if (fileExtension === 'pdf') {
+            // Si le fichier est un PDF, utilisez la balise embed
+            // return <embed src={fileUrl} type="application/pdf" className="img-container" />;
+            return ( 
+                <>
+                    <embed src={fileUrl} type="application/pdf" className="img-container-edit" /> 
+                    <div>
+                    <h1>Modification du devis</h1>
+                        <form action="" method="get">
+                            <div>
+                                <label htmlFor="name">Numéro de devis </label>
+                                <input type="text" name="supplier" id="supplier" required />
+                            </div>
+                            <div>
+                                <label htmlFor="name">Date du devis </label>
+                                <input type="text" name="supplier" id="supplier" required />
+                            </div>
+                            
+                            <div>
+                                <label htmlFor="name">Fournisseur </label>
+                                <input type="text" name="supplier" id="supplier" required />
+                            </div>
+                            <div>
+                                <label htmlFor="email">vatAmount </label>
+                                <input type="email" name="vatAmout" id="vatAmount" required />
+                            </div>
+                            <div>
+                                <label htmlFor="email">totalAmount </label>
+                                <input type="email" name="totalAmount" id="totalAmount" required />
+                            </div>
+                            <div>
+                                <input type="submit" value="Modifier" />
+                            </div>
+                        </form>
+                    </div>
+              </>
+                );
+        } else {
+            return ( 
+                <>
+                    {/* Pour les autres types (images), utilisez la balise img */}
+                    <img src={fileUrl} alt="Preview" className="img-container-edit" />;
+                    <h1>Modification du devis</h1>
+                    <form action="" method="get">
+                        <div>
+                            <label htmlFor="name">Numéro de devis </label>
+                            <input type="text" name="supplier" id="supplier" required />
+                        </div>
+                        <div>
+                            <label htmlFor="name">Date du devis </label>
+                            <input type="text" name="supplier" id="supplier" required />
+                        </div>
+                        
+                        <div>
+                            <label htmlFor="name">Fournisseur </label>
+                            <input type="text" name="supplier" id="supplier" required />
+                        </div>
+                        <div>
+                            <label htmlFor="email">vatAmount </label>
+                            <input type="email" name="vatAmout" id="vatAmount" required />
+                        </div>
+                        <div>
+                            <label htmlFor="email">totalAmount </label>
+                            <input type="email" name="totalAmount" id="totalAmount" required />
+                        </div>
+                        <div>
+                            <input type="submit" value="Modifier" />
+                        </div>
+                    </form>
+              </>
+                );
+        }
+    };
 
     const openModalWithContent = (modalcontent, modalType) => {
         let contenu;
@@ -163,10 +253,7 @@ const QuotationsTable = ({quotations = []}) => {
                                 <a onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>                            
                                 </td>
                                 <td>
-                                <button className='button' onClick={() => openModalWithContent(d.totalAmount.value, 'edit')}>Editer</button>
-                                </td>
-                                <td>
-                                <button className='button' onClick={() => handleExport(i)}>Export</button>
+                                <button className="button" onClick={() => openModalWithContent(d, 'edit')}>Editer</button>
                                 </td>
                             </tr>
 
