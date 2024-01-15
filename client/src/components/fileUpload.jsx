@@ -101,7 +101,7 @@ const FileUpload = () => {
         formData.append("file", file);
       }
     });
-
+    console.log("uploadedfiles : ", uploadedFiles);
     if (uploadedFiles?.length) {
       try {
         await axios
