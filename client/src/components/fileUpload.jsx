@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { styles } from "../themes";
 import ButtonFile from "./buttonSelectFile";
 import { IoCloudUploadOutline, IoClose } from "react-icons/io5";
@@ -54,14 +54,6 @@ const FileUpload = () => {
     });
     setFilesToUpload(prev => [...prev, ...newUploadedFiles.filter(f => f)]);
   };
-  
-
-  const removeFile = (event, index) => {
-    event.stopPropagation();
-    const updatedFiles = [...filesToUpload];
-    updatedFiles.splice(index, 1);
-    setFilesToUpload(updatedFiles);
-  };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: handleDrop,
@@ -76,44 +68,43 @@ const FileUpload = () => {
 
   async function fetchGroups() {
     return axios.get('http://localhost:3031/groups/getgroups')
-        .then(response => {
-            setGroups(response.data);
-        })
-        .catch(error => {
-            console.log("Fetch groups error : ", error);
-            throw error;
-        });
+      .then(response => {
+        setGroups(response.data);
+      })
+      .catch(error => {
+        console.log("Fetch groups error : ", error);
+        throw error;
+      });
   }
 
-  useEffect( ()=> {
+  useEffect(() => {
     setIsLoading(true);
     fetchGroups()
-    .then(() => {
+      .then(() => {
         setIsLoading(false);
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error("Error fetching data: ", error);
         setIsLoading(false);
-    });
-  },[]);
+      });
+  }, []);
 
   const inputGroupSection = !isLoading && <div className="groupSection">
-    Sélectionner un groupe existant :
-    <select name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
-                    <option value="" >Sélectionner un groupe</option>
-                    {groups?.map((g) => {
-                        return(
-                            <option value={g._id} key={g._id}>{g.groupName}</option>
-                        )
-                    }
-                    )}
-    </select>
+    {!inputGroup && <>Sélectionner un groupe existant :
+      <select name="groups" onChange={(e) => { setSelectedGroup(e.target.value) }} >
+        <option value="" >Sélectionner un groupe</option>
+        {groups?.map((g) => {
+          return (
+            <option value={g._id} key={g._id}>{g.groupName}</option>
+          )
+        }
+        )}
+      </select></>}
     {(!selectedGroup || !selectedGroup?.length) && <>Ou créez en un nouveau <input type='text' onChange={(e) => setInputGroup(e.target.value)}></input></>}
   </div>;
-console.log('SG', selectedGroup)
+
   async function processUploadedFiles(uploadedPathes) {
     if (uploadedPathes?.length) {
-
       if (selectedGroup?.length) {
         try {
           const groupId = selectedGroup;
@@ -130,46 +121,38 @@ console.log('SG', selectedGroup)
                 console.error("Error analyzing file", error);
               }
             });
-    
             await Promise.all(analyzePromises);
-  
             setShowButton(true);
           }
         } catch (error) {
           console.error("Error in creating group:", error);
         }
-
-      
       } else {
-
-      const groupName = inputGroup ?? `Comparatif du ${frenchFormattedDate}`;
-  
-      try {
-        const groupId = await createGroup(groupName);
-        if (groupId) {
-          const analyzePromises = uploadedPathes.map(async (path) => {
-            try {
-              const res = await axios.post("http://localhost:3031/quotations/analyze", {
-                filePath: path,
-                groupId: groupId,
-              });
-              setResultPathes(prevPathes => [...prevPathes, { file: path, result: true }]);
-            } catch (error) {
-              setResultPathes(prevPathes => [...prevPathes, { file: path, result: false }]);
-              console.error("Error analyzing file", error);
-            }
-          });
-  
-          await Promise.all(analyzePromises);
-
-          setShowButton(true);
+        const groupName = inputGroup ?? `Comparatif du ${frenchFormattedDate}`;
+        try {
+          const groupId = await createGroup(groupName);
+          if (groupId) {
+            const analyzePromises = uploadedPathes.map(async (path) => {
+              try {
+                const res = await axios.post("http://localhost:3031/quotations/analyze", {
+                  filePath: path,
+                  groupId: groupId,
+                });
+                setResultPathes(prevPathes => [...prevPathes, { file: path, result: true }]);
+              } catch (error) {
+                setResultPathes(prevPathes => [...prevPathes, { file: path, result: false }]);
+                console.error("Error analyzing file", error);
+              }
+            });
+            await Promise.all(analyzePromises);
+            setShowButton(true);
+          }
+        } catch (error) {
+          console.error("Error in creating group:", error);
         }
-      } catch (error) {
-        console.error("Error in creating group:", error);
       }
     }
-    }
-  } 
+  }
 
   const submit = async () => {
     setShowModal(true);
@@ -215,7 +198,7 @@ console.log('SG', selectedGroup)
                       <IoClose
                         size={20}
                         style={localStyles.closeButton}
-                        onClick={(event) => removeFile(event, index)}
+                        onClick={(event) => { event.stopPropagation(); setFilesToUpload((prev) => prev.filter(f => f !== file)) }}
                       />
                     </>
                   )}
@@ -229,7 +212,7 @@ console.log('SG', selectedGroup)
                       <IoClose
                         size={20}
                         style={localStyles.closeButton}
-                        onClick={(event) => removeFile(event, index)}
+                        onClick={(event) => { event.stopPropagation(); setFilesToUpload((prev) => prev.filter(f => f !== file)) }}
                       />
                     </>
                   )}
@@ -248,7 +231,7 @@ console.log('SG', selectedGroup)
       </div>
       {inputGroupSection}
       {filesToUpload?.length && <ButtonSubmit submit={submit} />}
-      {showModal && <Modal show={showModal} onClose={() => {setFilesToUpload([]); setUploadedFiles([]); setShowModal(false);}}>
+      {showModal && <Modal show={showModal} onClose={() => { setFilesToUpload([]); setUploadedFiles([]); setShowModal(false); }}>
         <div>
           <table>
             <thead>
@@ -262,30 +245,30 @@ console.log('SG', selectedGroup)
                 Analyze
               </th>
             </thead>
-          {filesToUpload?.map((f,i)=>{
-            return(
-              <tr key={`rown${i}`}>
-                <td>
-                  {f.file.path}
-                </td>
-                <td>
-                  {uploadedFiles.some(fi => fi.includes(f.file.path)) ? "OK" : "ERREUR"}
-                </td>
-                <td>
-                  {
-                  !resultPathes.some(fi => fi.file.includes(f.file.path)) ?
-                  "pending"
-                  : resultPathes.find(fi => fi.file.includes(f.file.path))?.result ? "OK" : "ERREUR"}
-                </td>
-              </tr>
-            )
+            {filesToUpload?.map((f, i) => {
+              return (
+                <tr key={`rown${i}`}>
+                  <td>
+                    {f.file.path}
+                  </td>
+                  <td>
+                    {uploadedFiles.some(fi => fi.includes(f.file.path)) ? "OK" : "ERREUR"}
+                  </td>
+                  <td>
+                    {
+                      !resultPathes.some(fi => fi.file.includes(f.file.path)) ?
+                        "pending"
+                        : resultPathes.find(fi => fi.file.includes(f.file.path))?.result ? "OK" : "ERREUR"}
+                  </td>
+                </tr>
+              )
 
-          })}
+            })}
 
           </table>
-          { showButton && <a className="nextbutton" onClick={()=> navigate("/tableaudevis")}>OK</a>}
+          {showButton && <a className="nextbutton" onClick={() => navigate("/tableaudevis")}>OK</a>}
         </div>
-            </Modal>}
+      </Modal>}
     </div>
   );
 };
