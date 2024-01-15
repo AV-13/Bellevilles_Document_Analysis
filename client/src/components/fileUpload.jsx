@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styles } from "../themes";
 import Button from "./buttonSelectFile";
@@ -11,6 +12,8 @@ const FileUpload = () => {
   const [uploadedPathes, setUploadedPathes] = useState([]);
   const [resultPathes, setResultPathes] = useState([]);
   const [inputGroup, setInputGroup] = useState();
+
+  const navigate = useNavigate();
 
   async function createGroup(groupName) {
     try {
@@ -25,20 +28,21 @@ const FileUpload = () => {
   }
 
   const handleDrop = (acceptedFiles) => {
-    const fileReader = new FileReader();
-    fileReader.onload = (event) => {
-      const imageUrl = event.target.result;
-      setUploadedFiles([...uploadedFiles, { type: "image", data: imageUrl }]);
-    };
-
-    if (acceptedFiles[0].type === "application/pdf") {
-      // Si le fichier est un PDF, utilisez embed au lieu de l'image
-      const fileUrl = URL.createObjectURL(acceptedFiles[0]);
-      setUploadedFiles([...uploadedFiles, { type: "pdf", data: fileUrl }]);
-    } else {
-      fileReader.readAsDataURL(acceptedFiles[0]);
-    }
+    const newUploadedFiles = acceptedFiles.map(file => {
+      if (file.type === "application/pdf") {
+        return { type: "pdf", data: URL.createObjectURL(file), file };
+      } else {
+        const fileReader = new FileReader();
+        fileReader.onload = (event) => {
+          setUploadedFiles(prev => [...prev, { type: "image", data: event.target.result, file }]);
+        };
+        fileReader.readAsDataURL(file);
+        return null;
+      }
+    });
+    setUploadedFiles(prev => [...prev, ...newUploadedFiles.filter(f => f)]);
   };
+  
 
   const removeFile = (event, index) => {
     event.stopPropagation();
@@ -75,6 +79,8 @@ const FileUpload = () => {
                   const tempArray = [...resultPathes];
                   tempArray.push({ file: path, result: true });
                   setResultPathes(tempArray);
+                  setUploadedFiles([]);
+                  navigate("/tableaudevis");
                 });
             } catch (error) {
               const tempArray = [...resultPathes];
@@ -90,8 +96,10 @@ const FileUpload = () => {
 
   const submit = async () => {
     const formData = new FormData();
-    uploadedFiles.map((el) => {
-      return formData.append("file", el);
+    uploadedFiles.forEach(({ file }) => {
+      if (file) {
+        formData.append("file", file);
+      }
     });
 
     if (uploadedFiles?.length) {
