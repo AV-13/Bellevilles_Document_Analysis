@@ -11,14 +11,17 @@ import Modal from './Modal';
 import './fileUpload.css';
 
 const FileUpload = () => {
+
   const [filesToUpload, setFilesToUpload] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [resultPathes, setResultPathes] = useState([]);
   const [inputGroup, setInputGroup] = useState();
   const [showButton, setShowButton] = useState(false);
+  const [groups, setGroups] = useState();
+  const [isLoading, setIsLoading] = useState();
 
-  
   const [showModal, setShowModal] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState();
 
   const navigate = useNavigate();
 
@@ -71,8 +74,74 @@ const FileUpload = () => {
     year: "numeric",
   });
 
+  async function fetchGroups() {
+    return axios.get('http://localhost:3031/groups/getgroups')
+        .then(response => {
+            setGroups(response.data);
+        })
+        .catch(error => {
+            console.log("Fetch groups error : ", error);
+            throw error;
+        });
+  }
+
+  useEffect( ()=> {
+    setIsLoading(true);
+    fetchGroups()
+    .then(() => {
+        setIsLoading(false);
+    })
+    .catch(error => {
+        console.error("Error fetching data: ", error);
+        setIsLoading(false);
+    });
+  },[]);
+
+  const inputGroupSection = !isLoading && <div className="groupSection">
+    Sélectionner un groupe existant :
+    <select name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
+                    <option value="" >Sélectionner un groupe</option>
+                    {groups?.map((g) => {
+                        return(
+                            <option value={g._id} key={g._id}>{g.groupName}</option>
+                        )
+                    }
+                    )}
+    </select>
+    {(!selectedGroup || !selectedGroup?.length) && <>Ou créez en un nouveau <input type='text' onChange={(e) => setInputGroup(e.target.value)}></input></>}
+  </div>;
+console.log('SG', selectedGroup)
   async function processUploadedFiles(uploadedPathes) {
     if (uploadedPathes?.length) {
+
+      if (selectedGroup?.length) {
+        try {
+          const groupId = selectedGroup;
+          if (groupId) {
+            const analyzePromises = uploadedPathes.map(async (path) => {
+              try {
+                const res = await axios.post("http://localhost:3031/quotations/analyze", {
+                  filePath: path,
+                  groupId: groupId,
+                });
+                setResultPathes(prevPathes => [...prevPathes, { file: path, result: true }]);
+              } catch (error) {
+                setResultPathes(prevPathes => [...prevPathes, { file: path, result: false }]);
+                console.error("Error analyzing file", error);
+              }
+            });
+    
+            await Promise.all(analyzePromises);
+  
+            setShowButton(true);
+          }
+        } catch (error) {
+          console.error("Error in creating group:", error);
+        }
+
+      
+      } else {
+
       const groupName = inputGroup ?? `Comparatif du ${frenchFormattedDate}`;
   
       try {
@@ -98,6 +167,7 @@ const FileUpload = () => {
       } catch (error) {
         console.error("Error in creating group:", error);
       }
+    }
     }
   } 
 
@@ -176,6 +246,7 @@ const FileUpload = () => {
           </>
         )}
       </div>
+      {inputGroupSection}
       {filesToUpload?.length && <ButtonSubmit submit={submit} />}
       {showModal && <Modal show={showModal} onClose={() => {setFilesToUpload([]); setUploadedFiles([]); setShowModal(false);}}>
         <div>
