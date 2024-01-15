@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from './Modal';
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import './QuotationsTable.css';
@@ -10,11 +10,29 @@ const QuotationsTable = ({quotations = []}) => {
 
     const [showModal, setShowModal] = useState(false);
     const [content, setContent] = useState(null);
-
+    const modalRef = useRef();
 
     useEffect(() => {
         sortData('createdAt');
     }, [quotations]);
+    useEffect(() => {
+        // Cette fonction vérifie si le clic a eu lieu en dehors de la modal
+        const handleClickOutside = (event) => {
+          if (modalRef.current && !modalRef.current.contains(event.target)) {
+            setShowModal(false);
+          }
+        };
+      
+        // Ajouter l'écouteur si la modal est affichée
+        if (showModal) {
+          document.addEventListener("mousedown", handleClickOutside);
+        }
+      
+        // Nettoyage de l'écouteur
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [showModal]);
 
     const fileBASEURL = process.env.NODE_ENV === 'development' 
     ? "http://localhost:3031/" 
@@ -74,26 +92,48 @@ const QuotationsTable = ({quotations = []}) => {
         })
     };
 
+
     const generatePreview = (file) => {
-        return <embed
-        src={`${fileBASEURL}${file}`}
-        type="application/pdf"
-        className="img-container"
-        />
-    } 
+        // Construire l'URL complète du fichier
+        const fileUrl = `${fileBASEURL}${file}`;
+    
+        // Vérifier l'extension du fichier pour déterminer son type
+        const fileExtension = file.split('.').pop().toLowerCase();
+    
+        if (fileExtension === 'pdf') {
+            // Si le fichier est un PDF, utilisez la balise embed
+            return <embed src={fileUrl} type="application/pdf" className="img-container" />;
+        } else {
+            // Pour les autres types (images), utilisez la balise img
+            return <img src={fileUrl} alt="Preview" className="img-container" />;
+        }
+    };
+    const generateUpdateForm = (file) => {
+        // Construire l'URL complète du fichier
+        const fileUrl = `${fileBASEURL}${file}`;
+    
+        // Vérifier l'extension du fichier pour déterminer son type
+        const fileExtension = file.split('.').pop().toLowerCase();
+    
+        if (fileExtension === 'pdf') {
+            // Si le fichier est un PDF, utilisez la balise embed
+            return <embed src={fileUrl} type="application/pdf" className="img-container" />;
+        } else {
+            // Pour les autres types (images), utilisez la balise img
+            return <img src={fileUrl} alt="Preview" className="img-container" />;
+        }
+    };
 
     const openModalWithContent = (modalcontent, modalType) => {
         let contenu;
         if (modalType === 'edit') {
-            contenu = modalcontent;
+            contenu = generateUpdateForm(modalcontent);
         } else if (modalType === 'preview') {
-            console.log("ctnt : ", modalcontent);
             contenu = generatePreview(modalcontent);
         }
         setContent(contenu);
         setShowModal(true);
     };
-
 
 
     if (!quotations.length) return <p>Pas de devis à afficher</p>;
@@ -140,7 +180,7 @@ const QuotationsTable = ({quotations = []}) => {
                                 <a onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>                            
                                 </td>
                                 <td>
-                                <button onClick={() => openModalWithContent(d.totalAmount.value, 'edit')}>Editer</button>
+                                <button className="button" onClick={() => openModalWithContent(d.totalAmount.value, 'edit')}>Editer</button>
                                 </td>
                             </tr>
 
@@ -148,7 +188,7 @@ const QuotationsTable = ({quotations = []}) => {
                     })}
                 </tbody>
             </table>
-            {showModal && <Modal show={showModal} onClose={() => setShowModal(false)}>
+            {showModal && <Modal ref={modalRef} show={showModal} onClose={() => setShowModal(false)}>
                 {content}
             </Modal>}
         </>
