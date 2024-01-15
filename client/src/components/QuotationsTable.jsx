@@ -108,11 +108,26 @@ const QuotationsTable = ({quotations = []}) => {
             return <img src={fileUrl} alt="Preview" className="img-container" />;
         }
     };
+    const generateUpdateForm = (file) => {
+        // Construire l'URL complète du fichier
+        const fileUrl = `${fileBASEURL}${file}`;
+    
+        // Vérifier l'extension du fichier pour déterminer son type
+        const fileExtension = file.split('.').pop().toLowerCase();
+    
+        if (fileExtension === 'pdf') {
+            // Si le fichier est un PDF, utilisez la balise embed
+            return <embed src={fileUrl} type="application/pdf" className="img-container" />;
+        } else {
+            // Pour les autres types (images), utilisez la balise img
+            return <img src={fileUrl} alt="Preview" className="img-container" />;
+        }
+    };
 
     const openModalWithContent = (modalcontent, modalType) => {
         let contenu;
         if (modalType === 'edit') {
-            contenu = modalcontent;
+            contenu = generateUpdateForm(modalcontent);
         } else if (modalType === 'preview') {
             contenu = generatePreview(modalcontent);
         }
@@ -165,7 +180,7 @@ const QuotationsTable = ({quotations = []}) => {
                                 <a onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>                            
                                 </td>
                                 <td>
-                                <button onClick={() => openModalWithContent(d.totalAmount.value, 'edit')}>Editer</button>
+                                <button className="button" onClick={() => openModalWithContent(d.totalAmount.value, 'edit')}>Editer</button>
                                 </td>
                             </tr>
 
