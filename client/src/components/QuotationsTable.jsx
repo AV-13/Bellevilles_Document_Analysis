@@ -163,10 +163,10 @@ const QuotationsTable = ({quotations = []}) => {
                                 <a onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>                            
                                 </td>
                                 <td>
-                                <button onClick={() => openModalWithContent(d.totalAmount.value, 'edit')}>Editer</button>
+                                <button className='button' onClick={() => openModalWithContent(d.totalAmount.value, 'edit')}>Editer</button>
                                 </td>
                                 <td>
-                                <button onClick={() => handleExport(i)}>Export</button>
+                                <button className='button' onClick={() => handleExport(i)}>Export</button>
                                 </td>
                             </tr>
 

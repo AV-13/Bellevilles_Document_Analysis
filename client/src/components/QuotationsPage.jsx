@@ -100,7 +100,7 @@ const QuotationsPage = () => {
                     }
                     )}
                </select>
-               <button onClick={() => handleExportGroup()}>Export donnée du groupe</button>
+               <button className='button' onClick={() => handleExportGroup()}>Export donnée du groupe</button>
                <QuotationsTable quotations={filteredDevis} />
             <Footer/>
             </>
