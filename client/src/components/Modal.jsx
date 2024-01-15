@@ -1,7 +1,7 @@
 import './Modal.css';
 import React, { forwardRef, useEffect } from 'react';
 
-const Modal = React.forwardRef(({ show, children, onClose }, modalRef) => {
+const Modal = forwardRef(({ show, children, onClose, modalType }, modalRef) => {
     const handleKeyDown = (event) => {
         if (event.keyCode === 27) { // 27 est le code pour la touche Échap
             onClose();
