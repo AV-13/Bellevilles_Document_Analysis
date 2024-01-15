@@ -6,6 +6,8 @@ import Header from './header';
 import Body from './body';
 import Footer from './footer';
 
+import * as XLSX from 'xlsx';
+
 const QuotationsPage = () => {
 
 
@@ -14,6 +16,7 @@ const QuotationsPage = () => {
     const [groups, setGroups] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState();
+    const [selectedGroupName, setSelectedGroupName] = useState('');
 
     async function fetchDevis() {
         return axios.get('http://localhost:3031/quotations/getAllQuotations')
@@ -35,6 +38,30 @@ const QuotationsPage = () => {
                 console.log("Fetch groups error : ", error);
                 throw error;
             });
+    }
+
+    const handleExportGroup = () => {
+
+        const filteredData = filteredDevis.map(el => ({
+            FOURNISSEUR: el.supplier.value,
+            IDENTIFIANT: el.quotationNumber.value,
+            DATE: el.quotationDate.value,
+            TVA: el.vatAmount.value,
+            TOTAL: el.totalAmount.value,
+
+        }));
+        const ws = XLSX.utils.json_to_sheet(filteredData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb,ws,'Sheet 1');
+        XLSX.writeFile(wb, selectedGroupName + '.xlsx');
+    }
+
+    const handleChange = (e) => {
+        setSelectedGroup(e.target.value);
+        const selectedGroupId = e.target.value;
+        const selectedGroup = groups.find((g) => g._id === selectedGroupId);
+
+        setSelectedGroupName(selectedGroup ? selectedGroup.groupName : '');
     }
 
     useEffect( ()=> {
@@ -64,7 +91,7 @@ const QuotationsPage = () => {
             : <>
             <Header/>
             <Body/>
-                <select name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
+                <select name="groups" onChange={(e) => handleChange(e)} >
                     <option value="" >Sélectionner un groupe</option>
                     {groups?.map((g) => {
                         return(
@@ -73,7 +100,8 @@ const QuotationsPage = () => {
                     }
                     )}
                </select>
-                <QuotationsTable quotations={filteredDevis} />
+               <button className='button' onClick={() => handleExportGroup()}>Export donnée du groupe</button>
+               <QuotationsTable quotations={filteredDevis} />
             <Footer/>
             </>
         )
