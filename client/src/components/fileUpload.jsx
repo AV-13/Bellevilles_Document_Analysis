@@ -9,7 +9,6 @@ import ButtonSubmit from "./buttonSubmit";
 
 const FileUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [uploadedPathes, setUploadedPathes] = useState([]);
   const [resultPathes, setResultPathes] = useState([]);
   const [inputGroup, setInputGroup] = useState();
 
@@ -36,8 +35,10 @@ const FileUpload = () => {
         fileReader.onload = (event) => {
           setUploadedFiles(prev => [...prev, { type: "image", data: event.target.result, file }]);
         };
+        fileReader.onerror = (error) => {
+          console.error("Error reading file:", error);
+        };
         fileReader.readAsDataURL(file);
-        return null;
       }
     });
     setUploadedFiles(prev => [...prev, ...newUploadedFiles.filter(f => f)]);
@@ -62,26 +63,22 @@ const FileUpload = () => {
     year: "numeric",
   });
 
-  useEffect(() => {
+  async function processUploadedFiles(uploadedPathes) {
     if (uploadedPathes?.length) {
       const groupName = inputGroup ?? `Comparatif du ${frenchFormattedDate}`;
-
-      createGroup(groupName).then((groupId) => {
+  
+      try {
+        const groupId = await createGroup(groupName);
         if (groupId) {
-          uploadedPathes.forEach(async (path) => {
+          const analyzePromises = uploadedPathes.map(async (path) => {
             try {
-              await axios
-                .post("http://localhost:3031/quotations/analyze", {
-                  filePath: path,
-                  groupId: groupId,
-                })
-                .then((res) => {
-                  const tempArray = [...resultPathes];
-                  tempArray.push({ file: path, result: true });
-                  setResultPathes(tempArray);
-                  setUploadedFiles([]);
-                  navigate("/tableaudevis");
-                });
+              const res = await axios.post("http://localhost:3031/quotations/analyze", {
+                filePath: path,
+                groupId: groupId,
+              });
+              const tempArray = [...resultPathes];
+              tempArray.push({ file: path, result: true });
+              setResultPathes(tempArray);
             } catch (error) {
               const tempArray = [...resultPathes];
               tempArray.push({ file: path, result: false });
@@ -89,10 +86,17 @@ const FileUpload = () => {
               console.error("Error analyzing file", error);
             }
           });
+  
+          await Promise.all(analyzePromises);
+  
+          setUploadedFiles([]);
+          navigate("/tableaudevis");
         }
-      });
+      } catch (error) {
+        console.error("Error in creating group:", error);
+      }
     }
-  }, [uploadedPathes]);
+  } 
 
   const submit = async () => {
     const formData = new FormData();
@@ -107,9 +111,9 @@ const FileUpload = () => {
         await axios
           .post("http://localhost:3031/upload", formData)
           .then((res) => {
-            setUploadedPathes(res.data.files);
+            console.log("Files uploaded successfully");
+            return processUploadedFiles(res.data.files);
           });
-        console.log("File uploaded successfully");
       } catch (error) {
         console.error("Error uploading file", error);
       }
