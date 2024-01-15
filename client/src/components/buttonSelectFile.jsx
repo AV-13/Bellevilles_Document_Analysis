@@ -1,7 +1,7 @@
 import React from "react";
 import { styles } from "../themes";
 import { LuFolderSearch } from "react-icons/lu";
-const Button = () => {
+const ButtonFile = () => {
   return (
     <div>
       <div style={localStyles.button}>
@@ -25,4 +25,4 @@ const localStyles = {
     ...styles.m10,
   },
 };
-export default Button;
+export default ButtonFile;

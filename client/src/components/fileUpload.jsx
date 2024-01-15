@@ -3,7 +3,7 @@ import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styles } from "../themes";
-import Button from "./buttonSelectFile";
+import ButtonFile from "./buttonSelectFile";
 import { IoCloudUploadOutline, IoClose } from "react-icons/io5";
 import ButtonSubmit from "./buttonSubmit";
 import Modal from './Modal';
@@ -15,6 +15,7 @@ const FileUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [resultPathes, setResultPathes] = useState([]);
   const [inputGroup, setInputGroup] = useState();
+  const [showButton, setShowButton] = useState(false);
 
   
   const [showModal, setShowModal] = useState(false);
@@ -91,16 +92,15 @@ const FileUpload = () => {
           });
   
           await Promise.all(analyzePromises);
-  
-          setFilesToUpload([]);
-          // navigate("/tableaudevis");
+
+          setShowButton(true);
         }
       } catch (error) {
         console.error("Error in creating group:", error);
       }
     }
   } 
-console.log('RP',resultPathes)
+
   const submit = async () => {
     setShowModal(true);
     const formData = new FormData();
@@ -131,7 +131,7 @@ console.log('RP',resultPathes)
         <input {...getInputProps()} />
         {filesToUpload.length > 0 ? (
           <>
-            <Button />
+            <ButtonFile />
             <ul style={localStyles.fileList}>
               {filesToUpload.map((file, index) => (
                 <li style={localStyles.li} key={index}>
@@ -172,12 +172,12 @@ console.log('RP',resultPathes)
             <IoCloudUploadOutline size={100} />
             <p>Glisser et Déposer vos fichiers ici</p>
             <p>ou</p>
-            <Button />
+            <ButtonFile />
           </>
         )}
       </div>
-      <ButtonSubmit submit={submit} />
-      {showModal && <Modal show={showModal} onClose={() => setShowModal(false)}>
+      {filesToUpload?.length && <ButtonSubmit submit={submit} />}
+      {showModal && <Modal show={showModal} onClose={() => {setFilesToUpload([]); setUploadedFiles([]); setShowModal(false);}}>
         <div>
           <table>
             <thead>
@@ -198,13 +198,13 @@ console.log('RP',resultPathes)
                   {f.file.path}
                 </td>
                 <td>
-                  {uploadedFiles.some(fi => fi.includes(f.file.path)) ? "OK" : "X"}
+                  {uploadedFiles.some(fi => fi.includes(f.file.path)) ? "OK" : "ERREUR"}
                 </td>
                 <td>
                   {
                   !resultPathes.some(fi => fi.file.includes(f.file.path)) ?
                   "pending"
-                  : resultPathes.find(fi => fi.file.includes(f.file.path))?.result ? "OK" : "X"}
+                  : resultPathes.find(fi => fi.file.includes(f.file.path))?.result ? "OK" : "ERREUR"}
                 </td>
               </tr>
             )
@@ -212,6 +212,7 @@ console.log('RP',resultPathes)
           })}
 
           </table>
+          { showButton && <a className="nextbutton" onClick={()=> navigate("/tableaudevis")}>OK</a>}
         </div>
             </Modal>}
     </div>
