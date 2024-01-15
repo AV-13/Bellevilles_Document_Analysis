@@ -95,6 +95,7 @@ const FileUpload = () => {
     });
 
     if (uploadedFiles?.length) {
+      console.log(uploadedFiles);
       try {
         await axios
           .post("http://localhost:3031/upload", formData)

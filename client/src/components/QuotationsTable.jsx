@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import './QuotationsTable.css';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 const QuotationsTable = ({quotations = []}) => {
     
@@ -95,6 +97,26 @@ const QuotationsTable = ({quotations = []}) => {
     };
 
 
+    const handleExport = (key) => {
+        const data = sortedQuotations[key];
+
+        const filteredData = [{
+            FOURNISSEUR: data.supplier.value,
+            IDENTIFIANT: data.quotationNumber.value,
+            DATE: data.quotationDate.value,
+            TVA: data.vatAmount.value,
+            TOTAL: data.totalAmount.value,
+        }];
+
+        const fileName = data.supplier.value + data.quotationDate.value;
+
+        const ws = XLSX.utils.json_to_sheet(filteredData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb,ws,'Sheet 1');
+        XLSX.writeFile(wb, fileName + '.xlsx');
+    }
+
+
 
     if (!quotations.length) return <p>Pas de devis à afficher</p>;
 
@@ -111,6 +133,7 @@ const QuotationsTable = ({quotations = []}) => {
                         <th onClick={() => sortData('totalAmount')}>Total {displayArrow('totalAmount')}</th>
                             <th>Aperçu</th>
                             <th>Editer</th>
+                            <th>Export</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -141,6 +164,9 @@ const QuotationsTable = ({quotations = []}) => {
                                 </td>
                                 <td>
                                 <button onClick={() => openModalWithContent(d.totalAmount.value, 'edit')}>Editer</button>
+                                </td>
+                                <td>
+                                <button onClick={() => handleExport(i)}>Export</button>
                                 </td>
                             </tr>
 
