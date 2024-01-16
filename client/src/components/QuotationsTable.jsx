@@ -65,7 +65,6 @@ const QuotationsTable = ({quotations = []}) => {
         }
     };
 
-    if (!quotations?.length) return <p>Ca charge...</p>;
 
     const frenchFormattedDate = (newDate) => {
     const dateDate = new Date(newDate);
@@ -250,7 +249,7 @@ const QuotationsTable = ({quotations = []}) => {
                                     {d.totalAmount?.value ?? "n.c"}
                                 </td>
                                 <td>
-                                <a onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>                            
+                                <a style={{cursor: 'pointer'}} onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>                            
                                 </td>
                                 <td>
                                 <button className="button" onClick={() => openModalWithContent(d, 'edit')}>Editer</button>

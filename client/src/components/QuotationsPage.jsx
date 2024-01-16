@@ -3,10 +3,10 @@ import axios from 'axios';
 
 import QuotationsTable from './QuotationsTable';
 import Header from './header';
-import Body from './body';
 import Footer from './footer';
 
 import * as XLSX from 'xlsx';
+import './QuotationsPage.css';
 
 const QuotationsPage = () => {
 
@@ -17,6 +17,7 @@ const QuotationsPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState();
     const [selectedGroupName, setSelectedGroupName] = useState('');
+    const [search, setSearch] = useState('');
 
     async function fetchDevis() {
         return axios.get('http://localhost:3031/quotations/getAllQuotations')
@@ -52,7 +53,7 @@ const QuotationsPage = () => {
         }));
         const ws = XLSX.utils.json_to_sheet(filteredData);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb,ws,'Sheet 1');
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet 1');
         XLSX.writeFile(wb, selectedGroupName + '.xlsx');
     }
 
@@ -64,51 +65,57 @@ const QuotationsPage = () => {
         setSelectedGroupName(selectedGroup ? selectedGroup.groupName : '');
     }
 
-    useEffect( ()=> {
+    useEffect(() => {
         setIsLoading(true);
         Promise.all([fetchDevis(), fetchGroups()])
-        .then(() => {
-            setIsLoading(false);
-        })
-        .catch(error => {
-            console.error("Error fetching data: ", error);
-            setIsLoading(false);
-        });
-      },[]);
+            .then(() => {
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching data: ", error);
+                setIsLoading(false);
+            });
+    }, []);
 
-    useEffect( ()=> {
-        if (selectedGroup && devis) {
-            const newArray = devis.filter(d => d.groupId._id === selectedGroup);
+    useEffect(() => {
+        if (devis) {
+            const newArray = devis.filter(d => (!selectedGroup || d.groupId._id === selectedGroup) && (!search || d.supplier?.value?.toLowerCase().includes(search.toLowerCase()) || d.quotationNumber?.value?.toLowerCase().includes(search.toLowerCase()) || d.groupId?.groupName?.toLowerCase().includes(search.toLowerCase())));
             setFilteredDevis(newArray);
         } else {
-            setFilteredDevis([... devis]);
+            setFilteredDevis([...devis]);
         }
-      },[selectedGroup, devis]);
+    }, [selectedGroup, devis, search]);
 
-      return (
-        
-            isLoading ? <p>Ca charge...</p>
+    return (
+
+        isLoading ? <p>Ca charge...</p>
             : <>
-            <Header/>
-            <div style={{marginTop: '5em'}}></div>
-            <div className='container'>
-                <div className="groupsection">
-                    <select name="groups" onChange={(e) => handleChange(e)} >
-                        <option value="" >Sélectionner un groupe</option>
-                        {groups?.map((g) => {
-                            return(
-                                <option value={g._id} key={g._id}>{g.groupName}</option>
-                            )
-                        }
-                        )}
-                 </select>
-                <button className='button' onClick={() => handleExportGroup()}><i class="material-icons">download</i></button>
-               </div>
-               <QuotationsTable quotations={filteredDevis} />
-            </div>
-            <Footer/>
+                <Header />
+                <div style={{ marginTop: '5em' }}></div>
+                <div className='container'>
+                    <div className="groupsection">
+                        <div className="searchSection">
+                            <div className="searchSection">
+                                <i className="material-icons">search</i><input type="text" placeholder='Rechercher....' onChange={(e) => setSearch(e.target.value)} />
+                            </div>
+                            <select name="groups" onChange={(e) => handleChange(e)} >
+                                <option value="" >Sélectionner un groupe</option>
+                                {groups?.map((g) => {
+                                    return (
+                                        <option value={g._id} key={g._id}>{g.groupName}</option>
+                                    )
+                                }
+                                )}
+                            </select>
+
+                        </div>
+                        <button className='button' onClick={() => handleExportGroup()}><i className="material-icons">download</i></button>
+                    </div>
+                    <QuotationsTable quotations={filteredDevis} />
+                </div>
+                <Footer />
             </>
-        )
+    )
 }
 
 export default QuotationsPage
