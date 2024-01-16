@@ -313,7 +313,7 @@ const FileUpload = () => {
       {showModal && (
         <Modal
           show={showModal}
-          onClose={() => {
+          onClose={(e) => {
             if (!showButton) {
               e.stopPropagation();
               return;
