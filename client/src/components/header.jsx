@@ -1,16 +1,15 @@
 import React, { useState, useContext } from "react";
-import { styles } from "../themes";
 import { Link } from "react-router-dom";
 import {UserContext, userContext} from "../App";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
+import './header.css';
 
 const Header = () => {
 
   const [context, setContext] = useContext(UserContext);
   const navigate = useNavigate();
-console.log('CTX', context.isLoggedIn);
   const handleLogout = () => {
     try {
       axios.get('http://localhost:3031/user/logout').then((data) => {
@@ -23,48 +22,49 @@ console.log('CTX', context.isLoggedIn);
   }
 
   return (
-    <header style={localStyles.header}>
-      <div style={localStyles.logo}>
-        <Link to="/" style={localStyles.logoLink}>
-          Mon Logo
+    <>
+    <header>
+      <div className="logo">
+        <Link to="/">
+          <img src="/img/logowescan.png" alt="logowescan" />
         </Link>
       </div>
-      <nav style={localStyles.nav}>
-        <ul style={localStyles.navList}>
-          <li style={localStyles.navItem}>
-            <Link to="/" style={localStyles.navLink}>
+      <nav className="navbar">
+        <ul>
+          <li>
+            <Link to="/">
               Accueil
             </Link>
           </li>
           { !context.isLoggedIn && <>
-            <li style={localStyles.navItem}>
-              <Link to="/login" style={localStyles.navLink}>
+            <li>
+              <Link to="/login">
                 Connexion
               </Link>
             </li>
-            <li style={localStyles.navItem}>
-              <Link to="/register" style={localStyles.navLink}>
+            <li>
+              <Link to="/register">
                 Inscription
               </Link>
             </li>
           </>
           }
-          <li style={localStyles.navItem}>
-            <a href="/tableaudevis" style={localStyles.navLink}>
+          <li>
+            <a href="/tableaudevis">
               {/* TODO LISTE */}
               Historique
             </a>
           </li>
 
           { context.isLoggedIn && <>
-          <li style={localStyles.navItem}>
-            <a href="#" style={localStyles.navLink}>
+          <li>
+            <a href="#">
               {/* TODO LISTE */}
               Profil
             </a>
           </li>
-          <li style={localStyles.navItem} onClick={() => handleLogout()}>
-            <a href="#" style={localStyles.navLink}>
+          <li onClick={() => handleLogout()}>
+            <a href="#">
               {/* TODO LISTE */}
               Déconnexion
             </a>
@@ -74,43 +74,9 @@ console.log('CTX', context.isLoggedIn);
         </ul>
       </nav>
     </header>
+    </>
   );
 };
 
-const localStyles = {
-  header: {
-    backgroundColor: styles.white,
-    color: styles.black,
-    ...styles.p15,
-    ...styles.display,
-    ...styles.rowSpaceBetween,
-  },
-  logo: {
-    ...styles.flex,
-  },
-  logoLink: {
-    color: styles.black,
-    textDecoration: "none",
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-  },
-  nav: {
-    textAlign: "right",
-    ...styles.flex,
-  },
-  navList: {
-    listStyle: "none",
-    ...styles.p0,
-	...styles.m0,
-    ...styles.display,
-  },
-  navItem: {
-    ...styles.ml15,
-  },
-  navLink: {
-    color: styles.black,
-    textDecoration: "none",
-  },
-};
 
 export default Header;

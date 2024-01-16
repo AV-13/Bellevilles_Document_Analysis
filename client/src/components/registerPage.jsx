@@ -9,7 +9,7 @@ const RegisterPage = () => {
   return (
     <>
       <Header/>
-      <Body/>
+      <div style={{marginTop: '5em'}}></div>
       <Register/>
       <Footer/>
     </>

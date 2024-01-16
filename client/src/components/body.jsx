@@ -1,6 +1,5 @@
 import React from "react";
 import { styles } from "../themes";
-import FileUpload from "./fileUpload";
 
 const Body = () => {
   return (

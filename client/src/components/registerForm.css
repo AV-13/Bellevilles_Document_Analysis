@@ -1,0 +1,9 @@
+.container {
+    min-height: 70vh;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}

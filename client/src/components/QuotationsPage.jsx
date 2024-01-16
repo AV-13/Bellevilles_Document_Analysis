@@ -90,18 +90,22 @@ const QuotationsPage = () => {
             isLoading ? <p>Ca charge...</p>
             : <>
             <Header/>
-            <Body/>
-                <select name="groups" onChange={(e) => handleChange(e)} >
-                    <option value="" >Sélectionner un groupe</option>
-                    {groups?.map((g) => {
-                        return(
-                            <option value={g._id} key={g._id}>{g.groupName}</option>
-                        )
-                    }
-                    )}
-               </select>
-               <button className='button' onClick={() => handleExportGroup()}>Export donnée du groupe</button>
+            <div style={{marginTop: '5em'}}></div>
+            <div className='container'>
+                <div className="groupsection">
+                    <select name="groups" onChange={(e) => handleChange(e)} >
+                        <option value="" >Sélectionner un groupe</option>
+                        {groups?.map((g) => {
+                            return(
+                                <option value={g._id} key={g._id}>{g.groupName}</option>
+                            )
+                        }
+                        )}
+                 </select>
+                <button className='button' onClick={() => handleExportGroup()}><i class="material-icons">download</i></button>
+               </div>
                <QuotationsTable quotations={filteredDevis} />
+            </div>
             <Footer/>
             </>
         )

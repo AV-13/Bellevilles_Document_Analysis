@@ -186,6 +186,7 @@ const QuotationsTable = ({quotations = []}) => {
         setShowModal(true);
     };
 
+    // Export one quotation
 
     const handleExport = (key) => {
         const data = sortedQuotations[key];
@@ -223,7 +224,6 @@ const QuotationsTable = ({quotations = []}) => {
                         <th onClick={() => sortData('totalAmount')}>Total {displayArrow('totalAmount')}</th>
                             <th>Aperçu</th>
                             <th>Editer</th>
-                            <th>Export</th>
                         </tr>
                     </thead>
                     <tbody>

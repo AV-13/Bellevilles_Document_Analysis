@@ -231,7 +231,15 @@ const FileUpload = () => {
       </div>
       {inputGroupSection}
       {filesToUpload?.length && <ButtonSubmit submit={submit} />}
-      {showModal && <Modal show={showModal} onClose={() => { setFilesToUpload([]); setUploadedFiles([]); setShowModal(false); }}>
+      {showModal && <Modal show={showModal} onClose={(e) => { 
+        if (!showButton) {
+          e.stopPropagation();
+          return;
+        }
+        setFilesToUpload([]); 
+        setUploadedFiles([]); 
+        setShowModal(false); }
+        }>
         <div>
           <table>
             <thead>
