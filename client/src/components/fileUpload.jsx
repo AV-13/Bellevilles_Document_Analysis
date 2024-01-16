@@ -6,12 +6,11 @@ import { styles } from "../themes";
 import ButtonFile from "./buttonSelectFile";
 import { IoCloudUploadOutline, IoClose } from "react-icons/io5";
 import ButtonSubmit from "./buttonSubmit";
-import Modal from './Modal';
+import Modal from "./Modal";
 
-import './fileUpload.css';
+import "./fileUpload.css";
 
 const FileUpload = () => {
-
   const [filesToUpload, setFilesToUpload] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [resultPathes, setResultPathes] = useState([]);
@@ -19,6 +18,7 @@ const FileUpload = () => {
   const [showButton, setShowButton] = useState(false);
   const [groups, setGroups] = useState();
   const [isLoading, setIsLoading] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState();
@@ -38,13 +38,25 @@ const FileUpload = () => {
   }
 
   const handleDrop = (acceptedFiles) => {
-    const newUploadedFiles = acceptedFiles.map(file => {
+    if (errorMessage && filesToUpload.length + acceptedFiles.length <= 10) {
+      setErrorMessage("");
+    }
+    if (filesToUpload.length + acceptedFiles.length > 10) {
+      setErrorMessage(
+        "Vous ne pouvez sélectionner que 10 fichiers au maximum."
+      );
+      return;
+    }
+    const newUploadedFiles = acceptedFiles.slice(0, 10).map((file) => {
       if (file.type === "application/pdf") {
         return { type: "pdf", data: URL.createObjectURL(file), file };
       } else {
         const fileReader = new FileReader();
         fileReader.onload = (event) => {
-          setFilesToUpload(prev => [...prev, { type: "image", data: event.target.result, file }]);
+          setFilesToUpload((prev) => [
+            ...prev,
+            { type: "image", data: event.target.result, file },
+          ]);
         };
         fileReader.onerror = (error) => {
           console.error("Error reading file:", error);
@@ -52,7 +64,7 @@ const FileUpload = () => {
         fileReader.readAsDataURL(file);
       }
     });
-    setFilesToUpload(prev => [...prev, ...newUploadedFiles.filter(f => f)]);
+    setFilesToUpload((prev) => [...prev, ...newUploadedFiles.filter((f) => f)]);
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -67,11 +79,12 @@ const FileUpload = () => {
   });
 
   async function fetchGroups() {
-    return axios.get('http://localhost:3031/groups/getgroups')
-      .then(response => {
+    return axios
+      .get("http://localhost:3031/groups/getgroups")
+      .then((response) => {
         setGroups(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("Fetch groups error : ", error);
         throw error;
       });
@@ -83,25 +96,50 @@ const FileUpload = () => {
       .then(() => {
         setIsLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error fetching data: ", error);
         setIsLoading(false);
       });
   }, []);
 
-  const inputGroupSection = !isLoading && <div className="groupSection">
-    {!inputGroup && <>Sélectionner un groupe existant :
-      <select name="groups" onChange={(e) => { setSelectedGroup(e.target.value) }} >
-        <option value="" >Sélectionner un groupe</option>
-        {groups?.map((g) => {
-          return (
-            <option value={g._id} key={g._id}>{g.groupName}</option>
-          )
-        }
-        )}
-      </select></>}
-    {(!selectedGroup || !selectedGroup?.length) && <>Ou créez en un nouveau <input type='text' onChange={(e) => setInputGroup(e.target.value)}></input></>}
-  </div>;
+  const inputGroupSection = !isLoading && (
+    <div className="groupSection">
+      {!inputGroup && (
+        <>
+          <div className="section-1">
+            <p>Sélectionner un groupe existant :</p>
+            <select
+              name="groups"
+              onChange={(e) => {
+                setSelectedGroup(e.target.value);
+              }}
+            >
+              <option value="">Sélectionner un groupe</option>
+              {groups?.map((g) => {
+                return (
+                  <option value={g._id} key={g._id}>
+                    {g.groupName}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        </>
+      )}
+      {!inputGroup && !selectedGroup && <>ou</>}
+      {(!selectedGroup || !selectedGroup?.length) && (
+        <>
+          <div className="section-2">
+            <p>Créez en un nouveau :</p>
+            <input
+              type="text"
+              onChange={(e) => setInputGroup(e.target.value)}
+            ></input>
+          </div>
+        </>
+      )}
+    </div>
+  );
 
   async function processUploadedFiles(uploadedPathes) {
     if (uploadedPathes?.length) {
@@ -111,13 +149,22 @@ const FileUpload = () => {
           if (groupId) {
             const analyzePromises = uploadedPathes.map(async (path) => {
               try {
-                const res = await axios.post("http://localhost:3031/quotations/analyze", {
-                  filePath: path,
-                  groupId: groupId,
-                });
-                setResultPathes(prevPathes => [...prevPathes, { file: path, result: true }]);
+                const res = await axios.post(
+                  "http://localhost:3031/quotations/analyze",
+                  {
+                    filePath: path,
+                    groupId: groupId,
+                  }
+                );
+                setResultPathes((prevPathes) => [
+                  ...prevPathes,
+                  { file: path, result: true },
+                ]);
               } catch (error) {
-                setResultPathes(prevPathes => [...prevPathes, { file: path, result: false }]);
+                setResultPathes((prevPathes) => [
+                  ...prevPathes,
+                  { file: path, result: false },
+                ]);
                 console.error("Error analyzing file", error);
               }
             });
@@ -134,13 +181,22 @@ const FileUpload = () => {
           if (groupId) {
             const analyzePromises = uploadedPathes.map(async (path) => {
               try {
-                const res = await axios.post("http://localhost:3031/quotations/analyze", {
-                  filePath: path,
-                  groupId: groupId,
-                });
-                setResultPathes(prevPathes => [...prevPathes, { file: path, result: true }]);
+                const res = await axios.post(
+                  "http://localhost:3031/quotations/analyze",
+                  {
+                    filePath: path,
+                    groupId: groupId,
+                  }
+                );
+                setResultPathes((prevPathes) => [
+                  ...prevPathes,
+                  { file: path, result: true },
+                ]);
               } catch (error) {
-                setResultPathes(prevPathes => [...prevPathes, { file: path, result: false }]);
+                setResultPathes((prevPathes) => [
+                  ...prevPathes,
+                  { file: path, result: false },
+                ]);
                 console.error("Error analyzing file", error);
               }
             });
@@ -198,7 +254,18 @@ const FileUpload = () => {
                       <IoClose
                         size={20}
                         style={localStyles.closeButton}
-                        onClick={(event) => { event.stopPropagation(); setFilesToUpload((prev) => prev.filter(f => f !== file)) }}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setFilesToUpload((prev) => {
+                            const updatedFiles = prev.filter((f) => f !== file);
+
+                            if (updatedFiles.length <= 10) {
+                              setErrorMessage("");
+                            }
+
+                            return updatedFiles;
+                          });
+                        }}
                       />
                     </>
                   )}
@@ -212,7 +279,18 @@ const FileUpload = () => {
                       <IoClose
                         size={20}
                         style={localStyles.closeButton}
-                        onClick={(event) => { event.stopPropagation(); setFilesToUpload((prev) => prev.filter(f => f !== file)) }}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setFilesToUpload((prev) => {
+                            const updatedFiles = prev.filter((f) => f !== file);
+
+                            if (updatedFiles.length <= 10) {
+                              setErrorMessage("");
+                            }
+
+                            return updatedFiles;
+                          });
+                        }}
                       />
                     </>
                   )}
@@ -229,46 +307,58 @@ const FileUpload = () => {
           </>
         )}
       </div>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {inputGroupSection}
       {filesToUpload?.length && <ButtonSubmit submit={submit} />}
-      {showModal && <Modal show={showModal} onClose={() => { setFilesToUpload([]); setUploadedFiles([]); setShowModal(false); }}>
-        <div>
-          <table>
-            <thead>
-              <th>
-                Nom
-              </th>
-              <th>
-                Upload
-              </th>
-              <th>
-                Analyze
-              </th>
-            </thead>
-            {filesToUpload?.map((f, i) => {
-              return (
-                <tr key={`rown${i}`}>
-                  <td>
-                    {f.file.path}
-                  </td>
-                  <td>
-                    {uploadedFiles.some(fi => fi.includes(f.file.path)) ? "OK" : "ERREUR"}
-                  </td>
-                  <td>
-                    {
-                      !resultPathes.some(fi => fi.file.includes(f.file.path)) ?
-                        "pending"
-                        : resultPathes.find(fi => fi.file.includes(f.file.path))?.result ? "OK" : "ERREUR"}
-                  </td>
-                </tr>
-              )
-
-            })}
-
-          </table>
-          {showButton && <a className="nextbutton" onClick={() => navigate("/tableaudevis")}>OK</a>}
-        </div>
-      </Modal>}
+      {showModal && (
+        <Modal
+          show={showModal}
+          onClose={() => {
+            setFilesToUpload([]);
+            setUploadedFiles([]);
+            setShowModal(false);
+          }}
+        >
+          <div>
+            <table>
+              <thead>
+                <th>Nom</th>
+                <th>Upload</th>
+                <th>Analyze</th>
+              </thead>
+              {filesToUpload?.map((f, i) => {
+                return (
+                  <tr key={`rown${i}`}>
+                    <td>{f.file.path}</td>
+                    <td>
+                      {uploadedFiles.some((fi) => fi.includes(f.file.path))
+                        ? "OK"
+                        : "ERREUR"}
+                    </td>
+                    <td>
+                      {!resultPathes.some((fi) => fi.file.includes(f.file.path))
+                        ? "pending"
+                        : resultPathes.find((fi) =>
+                            fi.file.includes(f.file.path)
+                          )?.result
+                        ? "OK"
+                        : "ERREUR"}
+                    </td>
+                  </tr>
+                );
+              })}
+            </table>
+            {showButton && (
+              <a
+                className="nextbutton"
+                onClick={() => navigate("/tableaudevis")}
+              >
+                OK
+              </a>
+            )}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
