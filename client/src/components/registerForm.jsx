@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
+import './registerForm.css';
+
 function RegisterForm() {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -34,31 +36,41 @@ function RegisterForm() {
     };
 
     return (
+        <div className="container">
         <form onSubmit={handleSubmit}>
+            <label htmlFor='username'>Username</label>
             <input 
+                name="username"
                 type="text" 
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Nom d'utilisateur" 
             />
+            <label htmlFor='email'>Email</label>
             <input 
+                name="email"
                 type="email" 
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email" 
             />
+            <label htmlFor='password'>Password</label>
             <input 
+                name="password"
                 type="password" 
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Mot de passe" 
             />
+            <label htmlFor='avatar'>Avatar</label>
             <input 
+                name="avatar"
                 type="file" 
                 onChange={(e) => setAvatar(e.target.files[0])}
             />
             <button type="submit">S'inscrire</button>
         </form>
+        </div>
     );
 }
 

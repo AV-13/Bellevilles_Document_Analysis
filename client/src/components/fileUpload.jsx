@@ -314,6 +314,10 @@ const FileUpload = () => {
         <Modal
           show={showModal}
           onClose={() => {
+            if (!showButton) {
+              e.stopPropagation();
+              return;
+            }
             setFilesToUpload([]);
             setUploadedFiles([]);
             setShowModal(false);

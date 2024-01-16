@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { UserContext } from '../App';
 
+import './registerForm.css';
+
 function LoginForm() {
     const [context, setContext] = useContext(UserContext);
 
@@ -23,14 +25,19 @@ function LoginForm() {
     };
 
     return (
+        <div className="container">
         <form onSubmit={handleSubmit}>
+            <label htmlFor='username'>Username</label>
             <input 
+                name='username'
                 type="text" 
                 value={username} 
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Nom d'utilisateur" 
             />
+            <label htmlFor='password'>Password</label>
             <input 
+                name='password'
                 type="password" 
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)}
@@ -38,6 +45,7 @@ function LoginForm() {
             />
             <button type="submit">Connexion</button>
         </form>
+    </div>
     );
 }
 

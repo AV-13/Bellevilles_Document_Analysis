@@ -9,7 +9,7 @@ const LoginPage = () => {
   return (
     <>
       <Header/>
-      <Body/>
+      <div style={{marginTop: '5em'}}></div>
       <Login/>
       <Footer/>
     </>
