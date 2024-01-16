@@ -20,3 +20,13 @@
 .img-container-edit {
     width:50%;
 }
+.img-container-preview {
+    width:100%;
+}
+.closeCross {
+    cursor: pointer;
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    font-size: 28px;
+}

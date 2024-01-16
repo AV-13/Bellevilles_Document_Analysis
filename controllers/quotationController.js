@@ -85,3 +85,16 @@ exports.getAllQuotations = async (req, res) => {
         console.log("quotationController.getAllQuotations : ", error);
     }
 };
+exports.updateQuotation = async (req, res) => {
+    try {
+      const updatedQuotation = await Quotation.findByIdAndUpdate(
+        req.params.id, 
+        req.body, 
+        { new: true }
+      );
+      res.json(updatedQuotation);
+    } catch (error) {
+      res.status(400).send("Erreur lors de la mise à jour du devis");
+    }
+  };
+  
