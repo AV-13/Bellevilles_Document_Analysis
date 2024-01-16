@@ -98,7 +98,7 @@ const QuotationsPage = () => {
                             <div className="searchSection">
                                 <i className="material-icons">search</i><input type="text" placeholder='Rechercher....' onChange={(e) => setSearch(e.target.value)} />
                             </div>
-                            <select name="groups" onChange={(e) => handleChange(e)} >
+                            <select name="groups" onChange={(e) => handleChange(e)} style={{marginLeft: '1em'}} >
                                 <option value="" >Sélectionner un groupe</option>
                                 {groups?.map((g) => {
                                     return (
