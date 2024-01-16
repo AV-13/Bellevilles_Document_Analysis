@@ -1,5 +1,6 @@
 import './Modal.css';
 import React, { forwardRef, useEffect } from 'react';
+import { ImCross } from "react-icons/im";
 
 const Modal = forwardRef(({ show, children, onClose, modalType }, modalRef) => {
     const handleKeyDown = (event) => {
@@ -8,10 +9,8 @@ const Modal = forwardRef(({ show, children, onClose, modalType }, modalRef) => {
         }
     };
 
-    useEffect(() => {
+    useEffect(() => { 
         document.addEventListener('keydown', handleKeyDown);
-
-        // Nettoyage de l'écouteur d'événements lors du démontage du composant
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
@@ -30,8 +29,9 @@ const Modal = forwardRef(({ show, children, onClose, modalType }, modalRef) => {
         <div className="modal-backdrop" onClick={handleBackdropClick}>
             <div className="modal" ref={modalRef}>
                 {children}
-                <button onClick={onClose}>Close</button>
+                
             </div>
+            {modalType === "edit" && <ImCross className="closeCross" onClick={onClose} />}
         </div>
     );
 });

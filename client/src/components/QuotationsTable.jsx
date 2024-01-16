@@ -1,16 +1,49 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import Modal from './Modal';
-import { FaMagnifyingGlass } from "react-icons/fa6";
+import { FaMagnifyingGlass, ImCross } from "react-icons/fa6";
 import './QuotationsTable.css';
 
 const QuotationsTable = ({quotations = []}) => {
     
     const [sortedQuotations, setSortedQuotations] = useState(quotations);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
-
+    const [modalType, setModalType] = useState(null);
+    const [groups, setGroups] = useState();
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedGroup, setSelectedGroup] = useState();
+    const formDataRef = useRef({
+        quotationNumber: null,
+        quotationDate: null,
+        supplier: null,
+        vatAmount: null,
+        totalAmount: null
+      });      
     const [showModal, setShowModal] = useState(false);
     const [content, setContent] = useState(null);
     const modalRef = useRef();
+    async function fetchGroups() {
+        return axios.get('http://localhost:3031/groups/getgroups')
+            .then(response => {
+                setGroups(response.data);
+            })
+            .catch(error => {
+                console.log("Fetch groups error : ", error);
+                throw error;
+            });
+    }
+
+    useEffect( ()=> {
+        setIsLoading(true);
+        Promise.all([fetchGroups()])
+        .then(() => {
+            setIsLoading(false);
+        })
+        .catch(error => {
+            console.error("Error fetching data: ", error);
+            setIsLoading(false);
+        });
+      },[]);
 
     useEffect(() => {
         sortData('createdAt');
@@ -92,7 +125,6 @@ const QuotationsTable = ({quotations = []}) => {
         })
     };
 
-
     const generatePreview = (file) => {
         // Construire l'URL complète du fichier
         const fileUrl = `${fileBASEURL}${file}`;
@@ -108,98 +140,113 @@ const QuotationsTable = ({quotations = []}) => {
             return <img src={fileUrl} alt="Preview" className="img-container-preview" />;
         }
     };
+
     const generateUpdateForm = (file) => {
-        console.log("file : ", file);
         // Construire l'URL complète du fichier
         const fileUrl = `${fileBASEURL}${file.fileUrl}`;
-        console.log("fileUrl: ", fileUrl);
-    
+        formDataRef.current = {
+            quotationNumber: {value: file.quotationNumber?.value, confidence: file.quotationNumber?.confidence} ?? null,
+            quotationDate: {value: file.quotationDate?.value, confidence: file.quotationDate?.confidence } ?? null,
+            supplier: {value: file.supplier?.value, confidence: file.supplier?.confidence} ?? null,
+            vatAmount: {value: file.vatAmount?.value, confidence: file.vatAmount?.confidence} ?? null,
+            totalAmount: {value: file.totalAmount?.value, confidence: file.totalAmount.confidence} ?? null
+          };
+          const handleInputChange = (e) => {
+            // Mettez à jour la valeur de l'input dans formDataRef
+            formDataRef.current = {
+              ...formDataRef.current,
+              [e.target.name]: {value: e.target.value, confidence: 1}
+            };
+          };
+          
+          
+          const handleSubmit = async (e) => {
+            e.preventDefault();
+          
+            // Utilisez les valeurs de formDataRef pour la soumission
+            const updatedFormData = formDataRef.current;
+            try {
+
+                const response = await axios.put(`http://localhost:3031/quotations/updateQuotation/${file._id}`, updatedFormData);
+                const updatedQuotation = response.data;
+                if (updatedQuotation) {
+                const updateQuotations = sortedQuotations.map(quotation => {
+                    if (quotation._id === updatedQuotation._id) {
+                        return updatedQuotation;
+                    }
+                    return quotation;
+                });
+                setSortedQuotations(updateQuotations);
+                setShowModal(false);
+            }
+
+
+            } catch (error) {
+              console.error("Erreur lors de la mise à jour", error);
+            }
+          };
+          
+      
         // Vérifier l'extension du fichier pour déterminer son type
         const fileExtension = file.fileUrl.split('.').pop().toLowerCase();
-    
-        if (fileExtension === 'pdf') {
-            // Si le fichier est un PDF, utilisez la balise embed
-            // return <embed src={fileUrl} type="application/pdf" className="img-container" />;
+
             return ( 
                 <>
-                    <embed src={fileUrl} type="application/pdf" className="img-container-edit" /> 
-                    <div>
+                { fileExtension === 'pdf' ? <embed src={fileUrl} type="application/pdf" className="img-container-edit" /> : <img src={fileUrl} alt="Preview" className="img-container-edit" /> }
+                     
+                    <div className='updateQuotationContainer'>
                     <h1>Modification du devis</h1>
-                        <form action="" method="get">
+                        <form onSubmit={handleSubmit}>
+                        <label htmlFor="groupId">Groupe </label>
+                        <select defaultValue= {file.groupId._id} name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
+                            <option >Sélectionner un groupe</option>
+                            {groups?.map((g) => {
+                                return(
+                                    <option value={g._id} key={g._id}>{g.groupName}</option>
+                                )
+                            }
+                            )}
+                        </select>
                             <div>
-                                <label htmlFor="name">Numéro de devis </label>
-                                <input type="text" name="supplier" id="supplier" required />
+                                <label htmlFor="quotationNumber">Numéro de devis </label>
+                                <input type="text" name="quotationNumber" id="quotationNumber" defaultValue={file.quotationNumber.value}  className={file.quotationNumber.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
                             </div>
                             <div>
-                                <label htmlFor="name">Date du devis </label>
-                                <input type="text" name="supplier" id="supplier" required />
+                                <label htmlFor="quotationDate">Date du devis </label>
+                                <input type="text" name="quotationDate" id="quotationDate" defaultValue={file.quotationDate.value} className={file.quotationDate.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
                             </div>
                             
                             <div>
-                                <label htmlFor="name">Fournisseur </label>
-                                <input type="text" name="supplier" id="supplier" required />
+                                <label htmlFor="supplier">Fournisseur </label>
+                                <input type="text" name="supplier" id="supplier" defaultValue={file.supplier.value} className={file.supplier.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
                             </div>
                             <div>
-                                <label htmlFor="email">vatAmount </label>
-                                <input type="email" name="vatAmout" id="vatAmount" required />
+                                <label htmlFor="TVA">TVA </label>
+                                <input type="TVA" name="vatAmount" id="vatAmount" defaultValue={file.vatAmount.value} className={file.vatAmount.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
                             </div>
                             <div>
-                                <label htmlFor="email">totalAmount </label>
-                                <input type="email" name="totalAmount" id="totalAmount" required />
+                                <label htmlFor="totalAmount">Total </label>
+                                <input type="totalAmount" name="totalAmount" id="totalAmount" defaultValue={file.totalAmount.value} className={file.totalAmount.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
                             </div>
-                            <div>
+                            <div className='submitInput'>
                                 <input type="submit" value="Modifier" />
                             </div>
                         </form>
                     </div>
-              </>
+                </>
                 );
-        } else {
-            return ( 
-                <>
-                    {/* Pour les autres types (images), utilisez la balise img */}
-                    <img src={fileUrl} alt="Preview" className="img-container-edit" />;
-                    <h1>Modification du devis</h1>
-                    <form action="" method="get">
-                        <div>
-                            <label htmlFor="name">Numéro de devis </label>
-                            <input type="text" name="supplier" id="supplier" required />
-                        </div>
-                        <div>
-                            <label htmlFor="name">Date du devis </label>
-                            <input type="text" name="supplier" id="supplier" required />
-                        </div>
-                        
-                        <div>
-                            <label htmlFor="name">Fournisseur </label>
-                            <input type="text" name="supplier" id="supplier" required />
-                        </div>
-                        <div>
-                            <label htmlFor="email">vatAmount </label>
-                            <input type="email" name="vatAmout" id="vatAmount" required />
-                        </div>
-                        <div>
-                            <label htmlFor="email">totalAmount </label>
-                            <input type="email" name="totalAmount" id="totalAmount" required />
-                        </div>
-                        <div>
-                            <input type="submit" value="Modifier" />
-                        </div>
-                    </form>
-              </>
-                );
-        }
     };
 
-    const openModalWithContent = (modalcontent, modalType) => {
+    const openModalWithContent = (modalcontent, type) => {
         let contenu;
-        if (modalType === 'edit') {
+        if (type === 'edit') {
             contenu = generateUpdateForm(modalcontent);
-        } else if (modalType === 'preview') {
+        } else if (type === 'preview') {
             contenu = generatePreview(modalcontent);
         }
         setContent(contenu);
         setShowModal(true);
+        setModalType(type);
     };
 
 
@@ -212,6 +259,7 @@ const QuotationsTable = ({quotations = []}) => {
                         <tr>
                         <th onClick={() => sortData('createdAt')}>Date d'upload {displayArrow('createdAt')}</th>
                         <th onClick={() => sortData('quotationNumber')}>Devis # {displayArrow('quotationNumber')}</th>
+                        <th onClick={() => sortData('quotationDate')}>Date {displayArrow('quotationDate')}</th>
                         <th onClick={() => sortData('supplier')}>Fournisseur {displayArrow('supplier')}</th>
                         <th onClick={() => sortData('groupId')}>Groupe {displayArrow('groupId')}</th>
                         <th onClick={() => sortData('vatAmount')}>TVA {displayArrow('vatAmount')}</th>
@@ -230,6 +278,9 @@ const QuotationsTable = ({quotations = []}) => {
                                 </td>
                                 <td className={d.quotationNumber.confidence < 0.85 ? "lowConfidence" : ""}>
                                     {d.quotationNumber?.value ?? "n.c"}
+                                </td>
+                                <td className={d.quotationDate.confidence < 0.85 ? "lowConfidence" : ""}>
+                                    {d.quotationDate?.value ?? "n.c"}
                                 </td>
                                 <td className={d.supplier.confidence < 0.85 ? "lowConfidence" : ""}>
                                     {d.supplier.value ?? "n.c"}
@@ -255,7 +306,7 @@ const QuotationsTable = ({quotations = []}) => {
                     })}
                 </tbody>
             </table>
-            {showModal && <Modal ref={modalRef} show={showModal} onClose={() => setShowModal(false)}>
+            {showModal && <Modal ref={modalRef} show={showModal} modalType={modalType} onClose={() => setShowModal(false)}>
                 {content}
             </Modal>}
         </>

@@ -1,5 +1,5 @@
 .lowConfidence {
-    background-color: orange;
+    background-color: orange !important;
 }
 
 /* Basic table styles */
@@ -78,4 +78,83 @@ table, th, td {
   /* Centrer tous les élements du tableau */
   tr > * {
     text-align: center;
+    overflow: hidden;
   }
+
+  /* FORM */
+  .updateQuotationContainer {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+  h1 {
+    font-size: 30px;
+  }
+  form, h1 {
+    margin: 0 20px;
+  }
+
+  label {
+    padding: 10px 0;
+    display: block;
+    color: gray;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+  }
+
+  input {
+    border: 1px solid black;
+    outline: none;
+    display: block;
+    background-color: lightgrey;
+    width: 100%;
+    border: 0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 12px 20px;
+    font-family: inherit;
+    font-size: 0.7em;
+    font-weight: 600;
+    line-height: inherit;
+    transition: 0.3s ease;
+  }
+  .submitInput {
+    display: flex;
+    justify-content: center;
+    padding: 35px 0;
+  }
+  .submitInput input {
+    cursor: pointer;
+    width: auto;
+    font-size: 1em;
+    color: white;
+    background-color: #EA4C89;
+    border-radius: 8px;
+  }
+  /* Select */
+  select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 0.7em;
+    color: #333;
+    width: 100%;
+    box-sizing: border-box;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
+  
+  /* Flèche personnalisée */
+  select {
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048"><path fill="%23999" d="M2048 640l-1024 1024L0 640h2048z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px;
+  }
+  
