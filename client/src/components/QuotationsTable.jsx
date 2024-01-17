@@ -303,7 +303,7 @@ const QuotationsTable = ({quotations = []}) => {
                                 <a style={{cursor: 'pointer'}} onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>                            
                                 </td>
                                 <td>
-                                <button className="button" onClick={() => openModalWithContent(d, 'edit')}>Editer</button>
+                                <button className="button" onClick={() => openModalWithContent(d, 'edit')}> <i className="material-icons">edit</i></button>
                                 </td>
                             </tr>
 
