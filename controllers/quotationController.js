@@ -3,6 +3,8 @@ const Quotation = require('../models/Quotation');
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload  = multer({ storage: storage });
+const fs = require('fs');
+const path = require('path');
 
 const {useCradl} = require('./cradlai');
 
@@ -85,6 +87,7 @@ exports.getAllQuotations = async (req, res) => {
         console.log("quotationController.getAllQuotations : ", error);
     }
 };
+
 exports.updateQuotation = async (req, res) => {
     try {
       const updatedQuotation = await Quotation.findByIdAndUpdate(
@@ -95,6 +98,30 @@ exports.updateQuotation = async (req, res) => {
       res.json(updatedQuotation);
     } catch (error) {
       res.status(400).send("Erreur lors de la mise à jour du devis");
+    }
+  };
+
+  exports.deleteQuotation = async (req, res) => {
+    try {
+      const quotation = await Quotation.findById(req.params.id);
+  
+      if (!quotation) {
+        return res.status(404).send("Quotation not found");
+      }
+  
+      const filename = path.basename(quotation.fileUrl);
+  
+      const filePath = path.join(__dirname, '..', 'public', filename);
+  
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+  
+      const deletedQuotation = await Quotation.findByIdAndDelete(req.params.id);
+  
+      res.json(deletedQuotation);
+    } catch (error) {
+      res.status(400).send("Erreur lors de la suppression du devis");
     }
   };
   
