@@ -43,6 +43,7 @@ const QuotationsPage = () => {
     const handleExportGroup = () => {
 
         const filteredData = filteredDevis.map(el => ({
+            DATE_UPLOAD : el.createdAt.value,
             FOURNISSEUR: el.supplier.value,
             IDENTIFIANT: el.quotationNumber.value,
             DATE: el.quotationDate.value,
@@ -50,10 +51,14 @@ const QuotationsPage = () => {
             TOTAL: el.totalAmount.value,
 
         }));
+        let fileName = 'exportDevis'
+        if(selectedGroupName) {
+            fileName = selectedGroupName;
+        }
         const ws = XLSX.utils.json_to_sheet(filteredData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb,ws,'Sheet 1');
-        XLSX.writeFile(wb, selectedGroupName + '.xlsx');
+        XLSX.writeFile(wb, fileName + '.xlsx');
     }
 
     const handleChange = (e) => {

@@ -5,12 +5,15 @@ import {UserContext, userContext} from "../App";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
+import { useUserContext } from "../userContext";
+
 
 const Header = () => {
 
-  const [context, setContext] = useContext(UserContext);
+  // const [context, setContext] = useContext(UserContext);
+  const [ context, setContext ]  = useUserContext();
   const navigate = useNavigate();
-console.log('CTX', context.isLoggedIn);
+  console.log('CTX', context.isLoggedIn);
   const handleLogout = () => {
     try {
       axios.get('http://localhost:3031/user/logout').then((data) => {
@@ -58,7 +61,7 @@ console.log('CTX', context.isLoggedIn);
 
           { context.isLoggedIn && <>
           <li style={localStyles.navItem}>
-            <a href="#" style={localStyles.navLink}>
+            <a href="/profile" style={localStyles.navLink}>
               {/* TODO LISTE */}
               Profil
             </a>

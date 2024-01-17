@@ -10,7 +10,6 @@ const {useCradl} = require('./cradlai');
 exports.getQuotationsByGroup = async (req, res) => {
     const { groupId } = req.query
 
-    console.log('enfin chef !',req);
     try {
         const quotations = await Quotation.find({ groupId: groupId })
         .populate({
