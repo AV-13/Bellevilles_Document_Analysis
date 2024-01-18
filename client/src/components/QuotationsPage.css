@@ -17,7 +17,25 @@
     align-items: center;
 }
 
-.searchSection {
+.searchAndSelectSection, .searchSection {
     display: flex;
     align-items: center;
 }
+
+.searchAndSelectSection {
+    width: 35%;
+}
+
+.selectSection {
+    width: 60%;
+}
+
+.searchSection {
+    width: 40%;
+}
+
+.searchSection input {
+    border: 1px #000 solid ;
+    background-color: #fff;
+}
+

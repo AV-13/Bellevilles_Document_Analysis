@@ -99,11 +99,11 @@ const QuotationsPage = () => {
                 <div style={{ marginTop: '5em' }}></div>
                 <div className='container'>
                     <div className="groupsection">
-                        <div className="searchSection">
+                        <div className="searchAndSelectSection">
                             <div className="searchSection">
                                 <i className="material-icons">search</i><input type="text" placeholder='Rechercher....' onChange={(e) => setSearch(e.target.value)} />
                             </div>
-                            <select name="groups" onChange={(e) => handleChange(e)} style={{marginLeft: '1em'}} >
+                            <select className="selectSection" name="groups" onChange={(e) => handleChange(e)} style={{marginLeft: '1em'}} >
                                 <option value="" >Sélectionner un groupe</option>
                                 {groups?.map((g) => {
                                     return (

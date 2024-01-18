@@ -324,7 +324,7 @@ const FileUpload = () => {
           }}
         >
           <div>
-            <table>
+            <table className="tableFileUpload">
               <thead>
                 <th>Nom</th>
                 <th>Upload</th>
