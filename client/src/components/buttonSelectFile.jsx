@@ -1,10 +1,12 @@
 import React from "react";
 import { styles } from "../themes";
 import { LuFolderSearch } from "react-icons/lu";
+import "./buttonSelectFile.css"
+
 const ButtonFile = () => {
   return (
-    <div>
-      <div style={localStyles.button}>
+    <div >
+      <div className="buttonSelectFile">
         Choisir les fichiers{" "}
         <LuFolderSearch size={30} style={localStyles.icons} />
       </div>
@@ -13,14 +15,6 @@ const ButtonFile = () => {
 };
 
 const localStyles = {
-  button: {
-    color: "rgba(149, 157, 165)",
-    background: " rgba(255, 255, 255)",
-    ...styles.p30,
-    display: "inline-flex",
-    alignItems: "center",
-    borderRadius: 10,
-  },
   icons: {
     ...styles.m10,
   },

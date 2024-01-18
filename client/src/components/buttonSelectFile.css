@@ -1,0 +1,8 @@
+.buttonSelectFile {
+    color: rgba(149, 157, 165);
+    background:  rgba(255, 255, 255);
+    padding: 30px;
+    display: inline-flex;   
+    align-items: center;
+    border-radius: 10px;
+}
