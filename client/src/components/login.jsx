@@ -5,27 +5,40 @@ import { UserContext } from '../App';
 import "./QuotationsTable.css";
 import "./loginRegister.css";
 import "./form.css";
+
+import { useUserContext } from "../userContext";
+
+
 function LoginForm() {
-    const [context, setContext] = useContext(UserContext);
+    // const [context, setContext] = useContext(UserContext);
+    const [ context, setContext ]  = useUserContext();
+
+
 
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [logginError, setError] = useState(null);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            axios.post('http://localhost:3031/user/login', { username, password }, { withCredentials: true }).then((data) => {
-            setContext({ uesrInfo: data, isLoggedIn: true });
-            navigate("/")
-            })
-        } catch (error) {
-            console.error("Erreur lors de la connexion : ", error);
-        }
+            const response = await axios.post('http://localhost:3031/user/login', { username, password }, { withCredentials: true });
+            setContext({ userInfo: response.data, isLoggedIn: true });
+            navigate('/');
+          } catch (error) {
+            if (error.response && error.response.status === 400) {
+              setError('Nom d\'utilisateur ou mot de passe incorrect.');
+            } else {
+              setError('Une erreur s\'est produite lors de la connexion.');
+            }
+            console.error('Erreur lors de la connexion : ', error);
+          }
     };
 
     return (
         <div className="container">
+                        {logginError && <div style={{ color: 'red' }}>{logginError}</div>}
         <form className="login-register-form" onSubmit={handleSubmit}>
                 <label htmlFor='username'>Username</label>
                 <input

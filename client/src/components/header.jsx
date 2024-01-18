@@ -1,15 +1,17 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import {UserContext, userContext} from "../App";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+
+import { useUserContext } from "../userContext";
 
 import './header.css';
 
 const Header = () => {
 
-  const [context, setContext] = useContext(UserContext);
+  const [ context, setContext ]  = useUserContext();
   const navigate = useNavigate();
+
   const handleLogout = () => {
     try {
       axios.get('http://localhost:3031/user/logout').then((data) => {
@@ -49,25 +51,22 @@ const Header = () => {
             </li>
           </>
           }
-          <li>
-            <a href="/tableaudevis">
-              {/* TODO LISTE */}
+          <li style={localStyles.navItem}>
+            <Link to="/tableaudevis" style={localStyles.navLink}>
               Historique
-            </a>
+            </Link>
           </li>
 
           { context.isLoggedIn && <>
-          <li>
-            <a href="#">
-              {/* TODO LISTE */}
+          <li style={localStyles.navItem}>
+            <Link to="/profile" style={localStyles.navLink}>
               Profil
-            </a>
+            </Link>
           </li>
-          <li onClick={() => handleLogout()}>
-            <a href="#">
-              {/* TODO LISTE */}
-              Déconnexion
-            </a>
+          <li style={localStyles.navItem} onClick={() => handleLogout()}>
+            <Link to="#" style={localStyles.navLink}>
+              Profil
+            </Link>
           </li>
           </>
           }
