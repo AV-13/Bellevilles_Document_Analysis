@@ -31,7 +31,7 @@ const Modal = forwardRef(({ show, children, onClose, modalType }, modalRef) => {
                 {children}
                 
             </div>
-            {modalType === "edit" && <ImCross className="closeCross" onClick={onClose} />}
+            {modalType === "edit" || modalType === "delete" && <ImCross className="closeCross" onClick={onClose} />}
         </div>
     );
 });

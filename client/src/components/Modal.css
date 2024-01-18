@@ -16,6 +16,7 @@
     padding: 20px;
     border-radius: 5px;
     display: flex;
+    overflow-y: auto;
 }
 /* EDIT MODAL */
 .img-container-edit {
@@ -23,7 +24,6 @@
 }
 .img-container-preview {
     width:100%;
-    object-fit: contain;
 }
 .closeCross {
     cursor: pointer;

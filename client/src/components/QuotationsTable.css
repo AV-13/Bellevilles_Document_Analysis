@@ -33,6 +33,10 @@ td {
     border-bottom: 1px solid #ddd;
 }
 
+.th-no-cursor {
+  cursor: auto !important;
+}
+
 /* Table border style */
 table, th, td {
     border: 1px solid #ddd;
@@ -47,7 +51,7 @@ table, th, td {
 }
 /* CSS */
 .button {
-    background-color: #EA4C89;
+    background-color: #8EA604;
     border-radius: 8px;
     border-style: none;
     box-sizing: border-box;
@@ -62,7 +66,7 @@ table, th, td {
   
   .button:hover,
   .button:focus {
-    background-color: #F082AC;
+    background-color: #7e9015;
   }
 
   .button-delete, .button-edit {
@@ -84,6 +88,10 @@ table, th, td {
     color: #eb3232;
   }
 
+  .button-edit:hover,
+  .button-edit:focus {
+    color: #eb8232;
+  }
 
   /* Centrer tous les élements du tableau */
   tr > * {
@@ -143,7 +151,7 @@ table, th, td {
     width: auto;
     font-size: 1em;
     color: white;
-    background-color: #EA4C89;
+    background-color: #8EA604;
     border-radius: 8px;
   }
   /* Select */
