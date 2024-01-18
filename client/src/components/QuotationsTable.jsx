@@ -352,10 +352,10 @@ const QuotationsTable = ({ quotations = [] }) => {
                                     <a style={{ cursor: 'pointer' }} onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>
                                 </td>
                                 <td>
-                                    <button className="button" onClick={() => openModalWithContent(d, 'edit')}> <i className="material-icons">edit</i></button>
+                                    <button className="button-edit" onClick={() => openModalWithContent(d, 'edit')}> <i className="material-icons">edit</i></button>
                                 </td>
                                 <td>
-                                    <button className="button" onClick={() => openModalWithContent(d, 'delete')}> <i className="material-icons">delete</i></button>
+                                    <button className="button-delete" onClick={() => openModalWithContent(d, 'delete')}> <i className="material-icons">delete</i></button>
                                 </td>
                             </tr>
 
