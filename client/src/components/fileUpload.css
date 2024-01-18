@@ -12,7 +12,6 @@ table {
 
 .nextbutton {
     color: black;
-    border: 1px solid black;
     border-radius: 10px;
 }
 
@@ -57,5 +56,19 @@ table {
     border-radius: 10px;
     cursor: pointer;
 }
-
-
+.tableFileUpload {
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+}
+.loader-check {
+    color: green;
+}
+.loader-error {
+    color: red;
+}
+.loader-container-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
