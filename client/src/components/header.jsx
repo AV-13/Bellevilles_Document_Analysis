@@ -51,20 +51,20 @@ const Header = () => {
             </li>
           </>
           }
-          <li style={localStyles.navItem}>
-            <Link to="/tableaudevis" style={localStyles.navLink}>
+         <li>
+            <Link to="/tableaudevis" >
               Historique
             </Link>
           </li>
 
           { context.isLoggedIn && <>
-          <li style={localStyles.navItem}>
-            <Link to="/profile" style={localStyles.navLink}>
+         <li>
+            <Link to="/profile" >
               Profil
             </Link>
           </li>
-          <li style={localStyles.navItem} onClick={() => handleLogout()}>
-            <Link to="#" style={localStyles.navLink}>
+          <li onClick={() => handleLogout()}>
+            <Link to="#" >
               Profil
             </Link>
           </li>
