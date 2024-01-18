@@ -10,7 +10,8 @@ const userRoutes = require('./routes/user');
 // const LocalStrategy = require('passport-local').Strategy
 const User = require('./models/User');
 require("dotenv").config();
-const cors = require('cors');
+const cors = require('cors')
+
 
 
 const MONGO_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}.v3uyutf.mongodb.net/?retryWrites=true&w=majority`;
