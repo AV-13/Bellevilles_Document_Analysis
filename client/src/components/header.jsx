@@ -51,13 +51,12 @@ const Header = () => {
             </li>
           </>
           }
+           { context.isLoggedIn && <>
          <li>
             <Link to="/tableaudevis" >
               Historique
             </Link>
-          </li>
-
-          { context.isLoggedIn && <>
+        </li>
          <li>
             <Link to="/profile" >
               Profil
