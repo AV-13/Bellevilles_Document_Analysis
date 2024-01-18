@@ -317,9 +317,9 @@ console.log(groups);
                         <th onClick={() => sortData('groupId')}>Groupe {displayArrow('groupId')}</th>
                         <th onClick={() => sortData('vatAmount')}>TVA {displayArrow('vatAmount')}</th>
                         <th onClick={() => sortData('totalAmount')}>Total {displayArrow('totalAmount')}</th>
-                        <th>Aperçu</th>
-                        <th>Editer</th>
-                        <th>Supprimer</th>
+                        <th className="th-no-cursor">Aperçu</th>
+                        <th className="th-no-cursor">Editer</th>
+                        <th className="th-no-cursor">Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
