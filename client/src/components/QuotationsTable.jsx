@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Modal from './Modal';
-import { FaMagnifyingGlass, ImCross } from "react-icons/fa6";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import ReactPaginate from 'react-paginate';
 import './QuotationsTable.css';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -10,6 +11,8 @@ const QuotationsTable = ({quotations = []}) => {
     
     const [sortedQuotations, setSortedQuotations] = useState(quotations);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+    const [currentPage, setCurrentPage] = useState(0);
+    const [quotationsPerPage] = useState(10);
     const [modalType, setModalType] = useState(null);
     const [groups, setGroups] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -108,6 +111,13 @@ const QuotationsTable = ({quotations = []}) => {
         })
     };
 
+    const offset = currentPage * quotationsPerPage;
+    const currentPageQuotations = sortedQuotations.slice(offset, offset + quotationsPerPage);
+
+    const handlePageClick = (selectedItem) => {
+        setCurrentPage(selectedItem.selected);
+    };
+
     const generatePreview = (file) => {
         // Construire l'URL complète du fichier
         const fileUrl = `${fileBASEURL}${file}`;
@@ -180,16 +190,18 @@ const QuotationsTable = ({quotations = []}) => {
                     <div className='updateQuotationContainer'>
                     <h1>Modification du devis</h1>
                         <form onSubmit={handleSubmit}>
-                        <label htmlFor="groupId">Groupe </label>
-                        <select defaultValue= {file.groupId._id} name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
-                            <option >Sélectionner un groupe</option>
-                            {groups?.map((g) => {
-                                return(
-                                    <option value={g._id} key={g._id}>{g.groupName}</option>
-                                )
-                            }
-                            )}
-                        </select>
+                        <div className="firstFormChild">
+                            <label htmlFor="groupId">Groupe </label>
+                            <select defaultValue= {file.groupId._id} name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
+                                <option >Sélectionner un groupe</option>
+                                {groups?.map((g) => {
+                                    return(
+                                        <option value={g._id} key={g._id}>{g.groupName}</option>
+                                    )
+                                }
+                                )}
+                            </select>
+                        </div>
                             <div>
                                 <label htmlFor="quotationNumber">Numéro de devis </label>
                                 <input type="text" name="quotationNumber" id="quotationNumber" defaultValue={file.quotationNumber.value}  className={file.quotationNumber.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
@@ -275,7 +287,7 @@ const QuotationsTable = ({quotations = []}) => {
                     </thead>
                     <tbody>
 
-                    {sortedQuotations.map((d,i) => {
+                    {currentPageQuotations.map((d, i)  => {
                         return (
                             <tr key={`row${i}`}>
                                 <td>
@@ -311,6 +323,18 @@ const QuotationsTable = ({quotations = []}) => {
                     })}
                 </tbody>
             </table>
+                <ReactPaginate
+                  previousLabel="Précédent"
+                  nextLabel="Suivant"
+                  breakLabel="..."
+                  pageCount={Math.ceil(sortedQuotations.length / quotationsPerPage)}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName={'pagination'}
+                  activeClassName={'active'}
+                  renderOnZeroPageCount={null}
+                />
             {showModal && <Modal ref={modalRef} show={showModal} modalType={modalType} onClose={() => setShowModal(false)}>
                 {content}
             </Modal>}
