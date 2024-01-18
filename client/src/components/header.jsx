@@ -9,70 +9,66 @@ import './header.css';
 
 const Header = () => {
 
-  const [ context, setContext ]  = useUserContext();
+  const [context, setContext] = useUserContext();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     try {
       axios.get('http://localhost:3031/user/logout').then((data) => {
-      setContext({ userInfo : null, isLoggedIn: false });
-      localStorage.clear();
-      navigate("/")
+        setContext({ userInfo: null, isLoggedIn: false });
+        localStorage.clear();
+        navigate("/")
+
       })
-  } catch (error) {
+    } catch (error) {
       console.error("Erreur lors de la déconnexion : ", error);
-  }
+    }
   }
 
   return (
     <>
-    <header>
-      <div className="logo">
-        <Link to="/">
-          <img src="/img/logowescan.png" alt="logowescan" />
-        </Link>
-      </div>
-      <nav className="navbar">
-        <ul>
-          <li>
-            <Link to="/">
-              Accueil
-            </Link>
-          </li>
-          { !context.isLoggedIn && <>
+      <header>
+        <div className="logo">
+          <Link to="/">
+            <img src="/img/logowescan.png" alt="logowescan" />
+          </Link>
+        </div>
+        <nav className="navbar">
+          <ul>
             <li>
-              <Link to="/login">
-                Connexion
+              <Link to="/">
+                Accueil
               </Link>
             </li>
-            <li>
-              <Link to="/register">
-                Inscription
-              </Link>
-            </li>
-          </>
-          }
-           { context.isLoggedIn && <>
-         <li>
-            <Link to="/tableaudevis" >
-              Historique
-            </Link>
-        </li>
-         <li>
-            <Link to="/profile" >
-              Profil
-            </Link>
-          </li>
-          <li onClick={() => handleLogout()}>
-            <Link to="#" >
-              Profil
-            </Link>
-          </li>
-          </>
-          }
-        </ul>
-      </nav>
-    </header>
+            {!context.isLoggedIn && <>
+              <li>
+                <Link to="/login">
+                  Connexion
+                </Link>
+              </li>
+              <li>
+                <Link to="/register">
+                  Inscription
+                </Link>
+              </li>
+            </>
+            }
+            {context.isLoggedIn && <>
+              <li>
+                <Link to="/tableaudevis" >
+                  Historique
+                </Link>
+              </li>
+              <li onClick={() => handleLogout()}>
+                <Link to="#" >
+                  Déconnexion
+                </Link>
+              </li>
+            </>
+            }
+          </ul>
+        </nav>
+      </header>
     </>
   );
 };

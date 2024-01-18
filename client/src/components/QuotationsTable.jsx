@@ -133,7 +133,7 @@ const QuotationsTable = ({ quotations = [] }) => {
             return <img src={fileUrl} alt="Preview" className="img-container-preview" />;
         }
     };
-
+console.log(groups);
     const generateUpdateForm = (file) => {
         // Construire l'URL complète du fichier
         const fileUrl = `${fileBASEURL}${file.fileUrl}`;
@@ -165,7 +165,7 @@ const QuotationsTable = ({ quotations = [] }) => {
                 if (updatedQuotation) {
                     const updateQuotations = sortedQuotations.map(quotation => {
                         if (quotation._id === updatedQuotation._id) {
-                            return updatedQuotation;
+                            return {...updatedQuotation, groupId: groups.find(g => g._id === updatedQuotation.groupId)};
                         }
                         return quotation;
                     });
@@ -352,10 +352,10 @@ const QuotationsTable = ({ quotations = [] }) => {
                                     <a style={{ cursor: 'pointer' }} onClick={() => openModalWithContent(d.fileUrl, 'preview')}><FaMagnifyingGlass /></a>
                                 </td>
                                 <td>
-                                    <button className="button" onClick={() => openModalWithContent(d, 'edit')}> <i className="material-icons">edit</i></button>
+                                    <button className="button-edit" onClick={() => openModalWithContent(d, 'edit')}> <i className="material-icons">edit</i></button>
                                 </td>
                                 <td>
-                                    <button className="button" onClick={() => openModalWithContent(d, 'delete')}> <i className="material-icons">delete</i></button>
+                                    <button className="button-delete" onClick={() => openModalWithContent(d, 'delete')}> <i className="material-icons">delete</i></button>
                                 </td>
                             </tr>
 
