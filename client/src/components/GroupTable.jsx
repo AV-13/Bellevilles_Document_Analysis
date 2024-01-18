@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import QuotationsTable from './QuotationsTable';
+import LoadingScreen from './loadingScreen';
 
 
 const GroupTable = ({groupSelId, groups = [] }) => {
@@ -33,7 +34,7 @@ const GroupTable = ({groupSelId, groups = [] }) => {
         }
       },[groupSelId, groups]);
 
-      if (!devis?.length) return <p>Ca charge...</p>;
+      if (!devis?.length) return <LoadingScreen />;
 
       return (
             <>

@@ -7,6 +7,7 @@ import Footer from './footer';
 
 import * as XLSX from 'xlsx';
 import './QuotationsPage.css';
+import LoadingScreen from './loadingScreen';
 
 const QuotationsPage = () => {
 
@@ -43,15 +44,25 @@ const QuotationsPage = () => {
 
     const handleExportGroup = () => {
 
-        const filteredData = filteredDevis.map(el => ({
-            DATE_UPLOAD : el.createdAt.value,
+
+        const filteredData = filteredDevis.map(el => {
+            const date = new Date(el.createdAt);
+
+            const jour = date.getDate().toString().padStart(2, '0');
+            const mois = (date.getMonth() + 1).toString().padStart(2, '0'); 
+            const annee = date.getFullYear();
+          
+            const dateFormatee = `${jour}/${mois}/${annee}`;
+
+            return {
+            DATE_UPLOAD : dateFormatee,
             FOURNISSEUR: el.supplier.value,
             IDENTIFIANT: el.quotationNumber.value,
             DATE: el.quotationDate.value,
             TVA: el.vatAmount.value,
             TOTAL: el.totalAmount.value,
-
-        }));
+            }
+        });
         let fileName = 'exportDevis'
         if(selectedGroupName) {
             fileName = selectedGroupName;
@@ -93,7 +104,7 @@ const QuotationsPage = () => {
 
     return (
 
-        isLoading ? <p>Ca charge...</p>
+        isLoading ? <LoadingScreen />
             : <>
                 <Header />
                 <div style={{ marginTop: '5em' }}></div>

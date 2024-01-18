@@ -16,6 +16,7 @@ const Header = () => {
     try {
       axios.get('http://localhost:3031/user/logout').then((data) => {
       setContext({ userInfo : null, isLoggedIn: false });
+      localStorage.clear();
       navigate("/")
       })
   } catch (error) {

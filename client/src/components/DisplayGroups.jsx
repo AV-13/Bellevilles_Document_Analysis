@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GroupTable from "./GroupTable";
 import axios from 'axios';
+import LoadingScreen from './loadingScreen';
 
 
 const DisplayGroups = () => {
@@ -23,7 +24,7 @@ const DisplayGroups = () => {
         fetchGroups();
       },[]);
 
-      if (!groups?.length) return <p>Ca charge...</p>;
+      if (!groups?.length) return <LoadingScreen />;
 
       return (
             <>

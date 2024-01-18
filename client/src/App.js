@@ -7,6 +7,7 @@ import ProfilePage from './components/profilePage';
 import PrivateRoute from './components/PrivateRoute';
 
 import { UserProvider } from './userContext';
+import LoadingScreen from './components/loadingScreen';
 
 
 
