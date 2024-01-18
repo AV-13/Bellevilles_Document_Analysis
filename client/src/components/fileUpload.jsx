@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import BarLoader from "react-spinners/BarLoader";
+import { FaCheckCircle } from "react-icons/fa";
+import { MdError } from "react-icons/md";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { styles } from "../themes";
@@ -232,6 +235,7 @@ const FileUpload = () => {
         console.error("Error uploading file", error);
       }
     }
+    console.log("files : ", filesToUpload)
   };
 
   return (
@@ -326,31 +330,39 @@ const FileUpload = () => {
           <div>
             <table className="tableFileUpload">
               <thead>
-                <th>Nom</th>
-                <th>Upload</th>
-                <th>Analyze</th>
+                <tr>
+                  <th>Nom</th>
+                  <th>Upload</th>
+                  <th>Analyze</th>
+                </tr>
               </thead>
+              <tbody>
               {filesToUpload?.map((f, i) => {
                 return (
-                  <tr key={`rown${i}`}>
-                    <td>{f.file.path}</td>
-                    <td>
-                      {uploadedFiles.some((fi) => fi.includes(f.file.path))
-                        ? "OK"
-                        : "ERREUR"}
-                    </td>
-                    <td>
-                      {!resultPathes.some((fi) => fi.file.includes(f.file.path))
-                        ? "pending"
-                        : resultPathes.find((fi) =>
-                            fi.file.includes(f.file.path)
-                          )?.result
-                        ? "OK"
-                        : "ERREUR"}
-                    </td>
-                  </tr>
+                    <tr key={`rown${i}`}>
+                      <td>{f.file.path}</td>
+                      <td>
+                        {uploadedFiles.some((fi) => fi.includes(f.file.path))
+                          ? <FaCheckCircle className="loader-check" />
+                          : <MdError className="loader-error" />}
+                      </td>
+                      <td className="loader-container">
+                        {
+                          !resultPathes.some((fi) => fi.file.includes(f.file.path))
+                            ? <div className="loader-container-bar"><BarLoader className="bar-loader" color="#36d7b7" /></div>
+                            : <>
+                              {
+                                resultPathes.find((fi) => fi.file.includes(f.file.path))?.result
+                                  ? <FaCheckCircle className="loader-check" />
+                                  : <MdError className="loader-error" />
+                              }
+                            </>
+                        }
+                      </td>
+                    </tr>
                 );
               })}
+              </tbody>
             </table>
             {showButton && (
               <a
