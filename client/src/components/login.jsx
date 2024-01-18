@@ -25,6 +25,7 @@ function LoginForm() {
         try {
             const response = await axios.post('http://localhost:3031/user/login', { username, password }, { withCredentials: true });
             setContext({ userInfo: response.data, isLoggedIn: true });
+            localStorage.setItem('user', JSON.stringify(response.data))
             navigate('/');
           } catch (error) {
             if (error.response && error.response.status === 400) {
