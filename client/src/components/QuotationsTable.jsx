@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import axios from 'axios';
 import Modal from './Modal';
 import { FaMagnifyingGlass } from "react-icons/fa6";
@@ -112,11 +112,14 @@ const QuotationsTable = ({ quotations = [] }) => {
     };
 
     const offset = currentPage * quotationsPerPage;
-    const currentPageQuotations = sortedQuotations.slice(offset, offset + quotationsPerPage);
 
     const handlePageClick = (selectedItem) => {
         setCurrentPage(selectedItem.selected);
     };
+
+    const currentPageQuotations = useMemo(() => {
+        return sortedQuotations.slice(offset, offset + quotationsPerPage);
+    }, [sortedQuotations, offset, quotationsPerPage]);
 
     const generatePreview = (file) => {
         // Construire l'URL complète du fichier
@@ -133,7 +136,7 @@ const QuotationsTable = ({ quotations = [] }) => {
             return <img src={fileUrl} alt="Preview" className="img-container-preview" />;
         }
     };
-console.log(groups);
+
     const generateUpdateForm = (file) => {
         // Construire l'URL complète du fichier
         const fileUrl = `${fileBASEURL}${file.fileUrl}`;
@@ -241,7 +244,7 @@ console.log(groups);
                 const response = await axios.delete(`http://localhost:3031/quotations/deleteQuotation/${file._id}`);
                 const deletedQuotation = response.data;
                 if (deletedQuotation) {
-                    const deletedQuotations = sortedQuotations.filter(quotation => !quotation._id !== deletedQuotation._id);
+                    const deletedQuotations = sortedQuotations.filter(quotation => quotation._id !== deletedQuotation._id);
                     setSortedQuotations(deletedQuotations);
                     setShowModal(false);
                 }
@@ -259,8 +262,8 @@ console.log(groups);
 
                 <div className='updateQuotationContainer'>
                     <h1>Suppression du devis N°{file.quotationNumber?.value ?? file.quotationNumber?.value}</h1>
-                    <p>Êtes-vous sûr de vouloir supprimer ce devis?</p>
-                    <button className="button" onClick={deleteSubmit}>OUI</button>
+                    <p style={{marginLeft: '20px'}}>Êtes-vous sûr de vouloir supprimer ce devis?</p>
+                    <button className="button" style={{marginLeft: '20px'}} onClick={deleteSubmit}>OUI</button>
                 </div>
             </>
         );
