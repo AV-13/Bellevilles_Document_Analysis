@@ -1,5 +1,5 @@
 .lowConfidence {
-    background-color: orange !important;
+    background-color: rgb(255, 216, 144) !important;
 }
 
 /* Basic table styles */
@@ -64,6 +64,27 @@ table, th, td {
   .button:focus {
     background-color: #F082AC;
   }
+
+  .button-delete, .button-edit {
+    background-color: transparent ;
+    border-style: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    height: 40px;
+    width: fit-content;
+  }
+
+  .button-delete {
+    color: #ff0000;
+  }
+  
+  .button-delete:hover,
+  .button-delete:focus {
+    color: #eb3232;
+  }
+
+
   /* Centrer tous les élements du tableau */
   tr > * {
     text-align: center;
