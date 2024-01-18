@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-
+import "./QuotationsTable.css"
 import './registerForm.css';
-
+import './form.css'
 function RegisterForm() {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -37,8 +37,8 @@ function RegisterForm() {
 
     return (
         <div className="container">
-        <form onSubmit={handleSubmit}>
-            <label htmlFor='username'>Username</label>
+        <form className="login-register-form"  onSubmit={handleSubmit}>
+            <label htmlFor='username'>Username <span className="required">*</span></label>
             <input 
                 name="username"
                 type="text" 
@@ -46,7 +46,7 @@ function RegisterForm() {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Nom d'utilisateur" 
             />
-            <label htmlFor='email'>Email</label>
+            <label htmlFor='email'>Email <span className="required">*</span></label>
             <input 
                 name="email"
                 type="email" 
@@ -54,7 +54,7 @@ function RegisterForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email" 
             />
-            <label htmlFor='password'>Password</label>
+            <label htmlFor='password'>Password <span className="required">*</span></label>
             <input 
                 name="password"
                 type="password" 
@@ -68,7 +68,7 @@ function RegisterForm() {
                 type="file" 
                 onChange={(e) => setAvatar(e.target.files[0])}
             />
-            <button type="submit">S'inscrire</button>
+            <button className="button login-button" type="submit">S'inscrire</button>
         </form>
         </div>
     );

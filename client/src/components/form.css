@@ -1,0 +1,19 @@
+.login-register-form label, .login-register-form input, .login-register-form button{
+  font-size: 18px !important;
+}
+.login-register-button{
+  background-color: #EA4C89;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 30px !important;
+  font-weight: 600;
+  height: 40px;
+  padding: 10px 16px;
+  width: fit-content;
+}
+.required {
+  color: red;
+}

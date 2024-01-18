@@ -2,9 +2,9 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { UserContext } from '../App';
-
-import './registerForm.css';
-
+import "./QuotationsTable.css";
+import "./loginRegister.css";
+import "./form.css";
 function LoginForm() {
     const [context, setContext] = useContext(UserContext);
 
@@ -26,15 +26,15 @@ function LoginForm() {
 
     return (
         <div className="container">
-        <form onSubmit={handleSubmit}>
-            <label htmlFor='username'>Username</label>
-            <input 
-                name='username'
-                type="text" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Nom d'utilisateur" 
-            />
+        <form className="login-register-form" onSubmit={handleSubmit}>
+                <label htmlFor='username'>Username</label>
+                <input
+                    name='username'
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Nom d'utilisateur"
+                />
             <label htmlFor='password'>Password</label>
             <input 
                 name='password'
@@ -43,7 +43,7 @@ function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Mot de passe" 
             />
-            <button type="submit">Connexion</button>
+                <button className="button login-button" type="submit">Connexion</button>
         </form>
     </div>
     );

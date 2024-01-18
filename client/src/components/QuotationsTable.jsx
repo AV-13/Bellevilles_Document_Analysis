@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Modal from './Modal';
-import { FaMagnifyingGlass, ImCross } from "react-icons/fa6";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import ReactPaginate from 'react-paginate';
 import './QuotationsTable.css';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -10,6 +11,8 @@ const QuotationsTable = ({ quotations = [] }) => {
 
     const [sortedQuotations, setSortedQuotations] = useState(quotations);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+    const [currentPage, setCurrentPage] = useState(0);
+    const [quotationsPerPage] = useState(10);
     const [modalType, setModalType] = useState(null);
     const [groups, setGroups] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -108,6 +111,13 @@ const QuotationsTable = ({ quotations = [] }) => {
         })
     };
 
+    const offset = currentPage * quotationsPerPage;
+    const currentPageQuotations = sortedQuotations.slice(offset, offset + quotationsPerPage);
+
+    const handlePageClick = (selectedItem) => {
+        setCurrentPage(selectedItem.selected);
+    };
+
     const generatePreview = (file) => {
         // Construire l'URL complète du fichier
         const fileUrl = `${fileBASEURL}${file}`;
@@ -179,42 +189,78 @@ const QuotationsTable = ({ quotations = [] }) => {
 
                 <div className='updateQuotationContainer'>
                     <h1>Modification du devis</h1>
-                    <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit}>
+                        <div className="firstFormChild">
                         <label htmlFor="groupId">Groupe </label>
-                        <select defaultValue={file.groupId._id} name="groups" onChange={(e) => { setSelectedGroup(e.target.value) }} >
+                        <select defaultValue= {file.groupId._id} name="groups" onChange={(e) => {setSelectedGroup(e.target.value)}} >
                             <option >Sélectionner un groupe</option>
                             {groups?.map((g) => {
-                                return (
+                                return(
                                     <option value={g._id} key={g._id}>{g.groupName}</option>
                                 )
                             }
                             )}
                         </select>
-                        <div>
-                            <label htmlFor="quotationNumber">Numéro de devis </label>
-                            <input type="text" name="quotationNumber" id="quotationNumber" defaultValue={file.quotationNumber.value} className={file.quotationNumber.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
                         </div>
-                        <div>
-                            <label htmlFor="quotationDate">Date du devis </label>
-                            <input type="text" name="quotationDate" id="quotationDate" defaultValue={file.quotationDate.value} className={file.quotationDate.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
-                        </div>
+                            <div>
+                                <label htmlFor="quotationNumber">Numéro de devis </label>
+                                <input type="text" name="quotationNumber" id="quotationNumber" defaultValue={file.quotationNumber.value}  className={file.quotationNumber.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
+                            </div>
+                            <div>
+                                <label htmlFor="quotationDate">Date du devis </label>
+                                <input type="text" name="quotationDate" id="quotationDate" defaultValue={file.quotationDate.value} className={file.quotationDate.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
+                            </div>
+                            
+                            <div>
+                                <label htmlFor="supplier">Fournisseur </label>
+                                <input type="text" name="supplier" id="supplier" defaultValue={file.supplier.value} className={file.supplier.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
+                            </div>
+                            <div>
+                                <label htmlFor="TVA">TVA </label>
+                                <input type="TVA" name="vatAmount" id="vatAmount" defaultValue={file.vatAmount.value} className={file.vatAmount.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
+                            </div>
+                            <div>
+                                <label htmlFor="totalAmount">Total </label>
+                                <input type="totalAmount" name="totalAmount" id="totalAmount" defaultValue={file.totalAmount.value} className={file.totalAmount.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
+                            </div>
+                            <div className='submitInput'>
+                                <input type="submit" value="Modifier" />
+                            </div>
+                        </form>
+                    </div>
+                </>
+                );
+    };
 
-                        <div>
-                            <label htmlFor="supplier">Fournisseur </label>
-                            <input type="text" name="supplier" id="supplier" defaultValue={file.supplier.value} className={file.supplier.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
-                        </div>
-                        <div>
-                            <label htmlFor="TVA">TVA </label>
-                            <input type="TVA" name="vatAmount" id="vatAmount" defaultValue={file.vatAmount.value} className={file.vatAmount.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
-                        </div>
-                        <div>
-                            <label htmlFor="totalAmount">Total </label>
-                            <input type="totalAmount" name="totalAmount" id="totalAmount" defaultValue={file.totalAmount.value} className={file.totalAmount.confidence < 0.85 ? "lowConfidence" : ""} onChange={handleInputChange} required />
-                        </div>
-                        <div className='submitInput'>
-                            <input type="submit" value="Modifier" />
-                        </div>
-                    </form>
+    const generateDelete = (file) => {
+
+        const fileUrl = `${fileBASEURL}${file.fileUrl}`;
+        const deleteSubmit = async (e) => {
+            e.preventDefault();
+            try {
+                const response = await axios.delete(`http://localhost:3031/quotations/deleteQuotation/${file._id}`);
+                const deletedQuotation = response.data;
+                if (deletedQuotation) {
+                    const deletedQuotations = sortedQuotations.filter(quotation => !quotation._id !== deletedQuotation._id);
+                    setSortedQuotations(deletedQuotations);
+                    setShowModal(false);
+                }
+            } catch (error) {
+                console.error("Erreur lors de la suppression", error);
+            }
+        };
+
+        // Vérifier l'extension du fichier pour déterminer son type
+        const fileExtension = file.fileUrl.split('.').pop().toLowerCase();
+
+        return (
+            <>
+                {fileExtension === 'pdf' ? <embed src={fileUrl} type="application/pdf" className="img-container-edit" /> : <img src={fileUrl} alt="Preview" className="img-container-edit" />}
+
+                <div className='updateQuotationContainer'>
+                    <h1>Suppression du devis N°{file.quotationNumber?.value ?? file.quotationNumber?.value}</h1>
+                    <p>Êtes-vous sûr de vouloir supprimer ce devis?</p>
+                    <button className="button" onClick={deleteSubmit}>OUI</button>
                 </div>
             </>
         );
@@ -312,7 +358,7 @@ const QuotationsTable = ({ quotations = [] }) => {
                 </thead>
                 <tbody>
 
-                    {sortedQuotations.map((d, i) => {
+                    {currentPageQuotations.map((d, i)  => {
                         return (
                             <tr key={`row${i}`}>
                                 <td>
@@ -351,6 +397,18 @@ const QuotationsTable = ({ quotations = [] }) => {
                     })}
                 </tbody>
             </table>
+                <ReactPaginate
+                  previousLabel="Précédent"
+                  nextLabel="Suivant"
+                  breakLabel="..."
+                  pageCount={Math.ceil(sortedQuotations.length / quotationsPerPage)}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName={'pagination'}
+                  activeClassName={'active'}
+                  renderOnZeroPageCount={null}
+                />
             {showModal && <Modal ref={modalRef} show={showModal} modalType={modalType} onClose={() => setShowModal(false)}>
                 {content}
             </Modal>}
