@@ -64,7 +64,7 @@ const Header = () => {
           </li>
           <li onClick={() => handleLogout()}>
             <Link to="#" >
-              Profil
+              Déconnexion
             </Link>
           </li>
           </>
