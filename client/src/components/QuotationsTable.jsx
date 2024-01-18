@@ -266,40 +266,6 @@ const QuotationsTable = ({ quotations = [] }) => {
         );
     };
 
-    const generateDelete = (file) => {
-
-        const fileUrl = `${fileBASEURL}${file.fileUrl}`;
-        const deleteSubmit = async (e) => {
-            e.preventDefault();
-            try {
-                const response = await axios.delete(`http://localhost:3031/quotations/deleteQuotation/${file._id}`);
-                const deletedQuotation = response.data;
-                if (deletedQuotation) {
-                    const deletedQuotations = sortedQuotations.filter(quotation => !quotation._id !== deletedQuotation._id);
-                    setSortedQuotations(deletedQuotations);
-                    setShowModal(false);
-                }
-            } catch (error) {
-                console.error("Erreur lors de la suppression", error);
-            }
-        };
-
-        // Vérifier l'extension du fichier pour déterminer son type
-        const fileExtension = file.fileUrl.split('.').pop().toLowerCase();
-
-        return (
-            <>
-                {fileExtension === 'pdf' ? <embed src={fileUrl} type="application/pdf" className="img-container-edit" /> : <img src={fileUrl} alt="Preview" className="img-container-edit" />}
-
-                <div className='updateQuotationContainer'>
-                    <h1>Suppression du devis N°{file.quotationNumber?.value ?? file.quotationNumber?.value}</h1>
-                    <p>Êtes-vous sûr de vouloir supprimer ce devis?</p>
-                    <button className="button" onClick={deleteSubmit}>OUI</button>
-                </div>
-            </>
-        );
-    };
-
     const openModalWithContent = (modalcontent, type) => {
         let contenu;
         if (type === 'edit') {
