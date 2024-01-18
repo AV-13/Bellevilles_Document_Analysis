@@ -1,0 +1,86 @@
+[33mddd59e4[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Merge branch 'StylesFixes'
+[33m0a68c26[m Merge branch 'closeIcon'
+[33m1b9873f[m[33m ([m[1;31morigin/StylesFixes[m[33m, [m[1;32mStylesFixes[m[33m)[m delete/update bug fix
+[33m36952f5[m[33m ([m[1;31morigin/closeIcon[m[33m, [m[1;32mcloseIcon[m[33m)[m add close icon and style for buttons
+[33m10602ab[m date upload done
+[33m9c17492[m data upload done
+[33md57740c[m modal styles fix
+[33m52852ae[m profile page deleted
+[33m9d8cfdb[m still connected after closing
+[33mb003b2a[m Merge branch 'fixUpdate'
+[33m586a8b7[m Update header.jsx
+[33m877c43b[m[33m ([m[1;32mfixUpdate[m[33m)[m fix group id update
+[33m7e33cb6[m Merge branch 'style-header-table'
+[33mb81ecc8[m[33m ([m[1;31morigin/style-header-table[m[33m, [m[1;32mstyle-header-table[m[33m)[m style
+[33ma844e0d[m Merge branch 'main' of https://github.com/AV-13/Bellevilles_Document_Analysis
+[33m69b2e42[m Merge branch 'main' of https://github.com/AV-13/Bellevilles_Document_Analysis
+[33ma65692c[m feat(model): dev mode
+[33m47c7b9e[m Merge branch 'main' of https://github.com/AV-13/Bellevilles_Document_Analysis
+[33mb8213e1[m header fix
+[33m1bb6355[m Merge branch 'styleBouton'
+[33mdccf639[m[33m ([m[1;31morigin/styleBouton[m[33m, [m[1;32mstyleBouton[m[33m)[m ok button style
+[33m0be93ad[m ok
+[33me8dc344[m merge fix
+[33m5c3a73f[m Merge branch 'protectedRoute'
+[33mb9f5c83[m merge fix
+[33m0326d85[m Merge branch 'pagination'
+[33m16f3b0c[m[33m ([m[1;31morigin/pagination[m[33m, [m[1;32mpagination[m[33m)[m feat(pagination): pagination and refactoring form css
+[33m675ec99[m[33m ([m[1;31morigin/deleteQuotations[m[33m, [m[1;32mdeleteQuotations[m[33m)[m object fit fix
+[33mfc25a60[m delete quotation and associated file
+[33maa78143[m[33m ([m[1;31morigin/protectedRoute[m[33m, [m[1;32mprotectedRoute[m[33m)[m page refresh fix
+[33m67668db[m add edit icon
+[33m3f1dfe6[m first try protectedroute
+[33m1b42b3b[m merge fixes
+[33m8108acc[m Merge branch 'preview-modal'
+[33mb9a8546[m[33m ([m[1;31morigin/preview-modal[m[33m, [m[1;32mpreview-modal[m[33m)[m feat(preview): edit form
+[33m08323e8[m[33m ([m[1;31morigin/tablesearch[m[33m, [m[1;32mtablesearch[m[33m)[m table search & styles
+[33mfc266bd[m merge fix
+[33m8f6a307[m Merge branch 'stylesAndFixes'
+[33m5d5de1b[m[33m ([m[1;31morigin/fileUpload[m[33m, [m[1;32mfileUpload[m[33m)[m feat: add limit files
+[33m3370c7c[m[33m ([m[1;32mstylesAndFixes[m[33m)[m Page and navbar styles, bug fixes
+[33m8fadf18[m Merge branch 'preview-modal'
+[33m7903483[m modal ref fix
+[33m54c208b[m feat(preview): preview done
+[33mc403def[m Merge branch 'exportV2'
+[33m7670263[m[33m ([m[1;31morigin/exportV2[m[33m, [m[1;32mexportV2[m[33m)[m style added
+[33m20f210c[m Merge branch 'preview-modal'
+[33ma960d05[m export done !
+[33m74f1020[m[33m ([m[1;31morigin/statusModal[m[33m, [m[1;32mstatusModal[m[33m)[m ok
+[33m04d8c35[m ok
+[33ma1e1eb5[m ok
+[33m79ca948[m ok
+[33mafb68cf[m feat(edit): edit wip
+[33m5d91c73[m analyze chain fix
+[33mfb225da[m feat(preview): preview modal and close modal fix
+[33m7aeecc9[m feat(preview): preview modal wip
+[33m83c750c[m[33m ([m[1;32mgroupName[m[33m)[m fix de l upload des fichiers
+[33mb29178a[m style(modal): modal preview with magnifying glass icon
+[33m87ed93c[m few corrections after merge
+[33m0c0a1ff[m login merge
+[33mb3426f7[m merge previw-image
+[33m00378b7[m[33m ([m[1;31morigin/login[m[33m, [m[1;32mlogin[m[33m)[m feat(connexion): sign up and login functionnal
+[33m82e9c5a[m[33m ([m[1;31morigin/displayalldevistable[m[33m, [m[1;32mdisplayalldevistable[m[33m)[m ok
+[33m73d9dbe[m[33m ([m[1;31morigin/previw-image[m[33m, [m[1;32mpreviw-image[m[33m)[m feat: preview image select
+[33m29e9413[m feat(login): not finished yet, login and register functionnal, front redirections too
+[33m495b505[m login branch with register bug
+[33m60c5357[m ok
+[33m59bf570[m fileUpload rassemblement
+[33mf8d7dd3[m Merge branch 'fecthdatainfront'
+[33m32e03bb[m merge css v2
+[33m965bd6e[m[33m ([m[1;31morigin/css[m[33m, [m[1;32mcss[m[33m)[m render images and pdf
+[33mb311825[m[33m ([m[1;31morigin/fecthdatainfront[m[33m, [m[1;32mfecthdatainfront[m[33m)[m display tables
+[33md915053[m fetch devis et groups et fait une table
+[33m755709f[m button drop and drag
+[33m511e3aa[m Remove logs
+[33mdc008da[m Resolved merge conflicts by favoring analyzechain branch
+[33m0aa672e[m Resolved merge conflicts by favoring css branch
+[33m53c9dcf[m[33m ([m[1;31morigin/uploadanalyzechain[m[33m, [m[1;32muploadanalyzechain[m[33m)[m analyze ok*
+[33mb34ce4e[m feat: header and footer
+[33m96f51ba[m upload / analyze map
+[33mcefade9[m[33m ([m[1;31morigin/front-upload[m[33m, [m[1;32mfront-upload[m[33m)[m file Upload Done !
+[33m6c1bf50[m front-upload start
+[33m1656b07[m quotation & groups
+[33maad4855[m database connection
+[33mdb68aca[m front-upload start
+[33m3422632[m cradl api connected
+[33m0a5d0c9[m[33m ([m[1;32mmaster[m[33m)[m initialization

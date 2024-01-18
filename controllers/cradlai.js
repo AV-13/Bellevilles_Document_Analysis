@@ -22,7 +22,7 @@ async function useCradl(fileUrl) {
       'las:model:3d5096b8ef0846bc849dd8bfc38adf65'
     );
       // dev model 'las:model:fab26165f910442caa01674f87a463a1'
-      test model 'las:model:3d5096b8ef0846bc849dd8bfc38adf65'
+      // test model 'las:model:3d5096b8ef0846bc849dd8bfc38adf65'
     return prediction;
 
   } catch (error) {
