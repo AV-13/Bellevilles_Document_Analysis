@@ -20,6 +20,7 @@
 /* EDIT MODAL */
 .img-container-edit {
     width:50%;
+    object-fit: contain;
 }
 .img-container-preview {
     width:100%;
@@ -29,6 +30,6 @@
     cursor: pointer;
     position: absolute;
     top: 10%;
-    right: 10%;
+    right: 13%;
     font-size: 28px;
 }

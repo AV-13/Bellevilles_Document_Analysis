@@ -259,8 +259,8 @@ console.log(groups);
 
                 <div className='updateQuotationContainer'>
                     <h1>Suppression du devis N°{file.quotationNumber?.value ?? file.quotationNumber?.value}</h1>
-                    <p>Êtes-vous sûr de vouloir supprimer ce devis?</p>
-                    <button className="button" onClick={deleteSubmit}>OUI</button>
+                    <p style={{marginLeft: '20px'}}>Êtes-vous sûr de vouloir supprimer ce devis?</p>
+                    <button className="button" style={{marginLeft: '20px'}} onClick={deleteSubmit}>OUI</button>
                 </div>
             </>
         );
