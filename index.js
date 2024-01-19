@@ -35,7 +35,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(session({
-  // TODO check secret what the fuck is this ?
   store: MongoStore.create({ mongoUrl: MONGO_URI}),
   secret: process.env.CLIENT_SECRET,
   cookie: {

@@ -18,7 +18,7 @@ const GroupTable = ({groupSelId, groups = [] }) => {
             });
         setDevis(response.data);
     } catch(error) {
-        console.log("Fetch devis error : ", error);
+        console.error("Fetch devis error : ", error);
         return null;
         }
     }
@@ -29,8 +29,6 @@ const GroupTable = ({groupSelId, groups = [] }) => {
 
             fetchDevis(selectedGroup[0]._id);
             setGroup(selectedGroup);
-        } else {
-            console.log("ça marche pas chef ! ");
         }
       },[groupSelId, groups]);
 

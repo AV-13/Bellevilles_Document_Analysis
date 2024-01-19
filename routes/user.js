@@ -31,9 +31,7 @@ router.post('/updateprofile', upload.single("avatar"), isLoggedIn, userControlle
 
 router.get("/avatar/:id", async(req, res) => {
   try {
-    console.log("Requête pour l'avatar reçue");
     const user = await User.findById(req.params.id);
-    console.log("utilisateur trouvé : ", user);
     res.set("Content-Type", user.avatar.contentType);
     res.send(user.avatar.data);
   } catch(error) {
@@ -41,5 +39,4 @@ router.get("/avatar/:id", async(req, res) => {
     res.status(400).send("Erreur lors de la récupération de l'avatar");
   }
 });
-// TODO Maybe do a error page
 module.exports = router;

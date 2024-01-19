@@ -35,7 +35,7 @@ const FileUpload = () => {
       });
       return response.data.group;
     } catch (error) {
-      console.log("Create Group Error : ", error);
+      console.error("Create Group Error : ", error);
       return null;
     }
   }
@@ -88,7 +88,7 @@ const FileUpload = () => {
         setGroups(response.data);
       })
       .catch((error) => {
-        console.log("Fetch groups error : ", error);
+        console.error("Fetch groups error : ", error);
         throw error;
       });
   }
@@ -227,7 +227,6 @@ const FileUpload = () => {
         await axios
           .post("http://localhost:3031/upload", formData)
           .then((res) => {
-            console.log("Files uploaded successfully");
             setUploadedFiles(res.data.files);
             return processUploadedFiles(res.data.files);
           });
@@ -235,7 +234,6 @@ const FileUpload = () => {
         console.error("Error uploading file", error);
       }
     }
-    console.log("files : ", filesToUpload)
   };
 
   return (

@@ -5,7 +5,7 @@ exports.getAllGroups = async (req, res) => {
         const groups = await Group.find();
         res.status(200).json(groups);
     } catch(error) {
-        console.log("groupsController.getAllGroups : ", error);
+        console.error("groupsController.getAllGroups : ", error);
     }
 }
 

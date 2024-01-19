@@ -26,7 +26,7 @@ const QuotationsPage = () => {
                 setDevis(response.data);
             })
             .catch(error => {
-                console.log("Fetch devis error : ", error);
+                console.error("Fetch devis error : ", error);
                 throw error;
             });
     }
@@ -37,7 +37,7 @@ const QuotationsPage = () => {
                 setGroups(response.data);
             })
             .catch(error => {
-                console.log("Fetch groups error : ", error);
+                console.error("Fetch groups error : ", error);
                 throw error;
             });
     }

@@ -22,7 +22,6 @@ function RegisterForm() {
         }
 
         try {
-          console.log("form data :", formData);
             axios.post('http://localhost:3031/user/register', formData , {
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -31,7 +30,6 @@ function RegisterForm() {
           console.error("error baby", error)
             // Gérer les erreurs ici
         }
-        console.log("Formulaire envoyé au backend");
         navigate('/login');
     };
 

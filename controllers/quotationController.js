@@ -19,7 +19,7 @@ exports.getQuotationsByGroup = async (req, res) => {
           });
         res.status(200).json(quotations);
     } catch(error) {
-        console.log("quotationController.getQuotationsByGroup : ", error);
+        console.error("quotationController.getQuotationsByGroup : ", error);
     }
 }
 const findCradlInfos = (pred, label) => {
@@ -69,7 +69,7 @@ exports.analyzeQuotation = async (req, res) => {
         res.status(200).json({ message: 'Quotation analyzed and saved successfully' });
 
     } catch(error) {
-        console.log("error : ", error);
+        console.error("error : ", error);
         res.status(500).json({ error: "Erreur lors de l'enregistrement d'un devis." });
     }
 };
@@ -83,7 +83,7 @@ exports.getAllQuotations = async (req, res) => {
           });
         res.status(200).json(quotations);
     } catch(error) {
-        console.log("quotationController.getAllQuotations : ", error);
+        console.error("quotationController.getAllQuotations : ", error);
     }
 };
 

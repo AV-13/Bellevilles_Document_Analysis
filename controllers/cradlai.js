@@ -12,7 +12,6 @@ const client = new Client(new ClientCredentials(
 async function useCradl(fileUrl) {
   try {
     const fileContents = await readFile(fileUrl);
-    //  TODO rajouter des conditions pour définir le type de document 
     const fileType = 'application/pdf';
     const documentResponse = await client.createDocument(fileContents, fileType);
 
@@ -26,7 +25,7 @@ async function useCradl(fileUrl) {
     return prediction;
 
   } catch (error) {
-    console.log("error using Cradl : ", error);
+    console.error("error using Cradl : ", error);
   }
 
 }

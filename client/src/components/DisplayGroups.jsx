@@ -15,7 +15,7 @@ const DisplayGroups = () => {
         const response = await axios.get('http://localhost:3031/groups/getgroups');
         setGroups(response.data);
     } catch(error) {
-        console.log("Fetch groups error : ", error);
+        console.error("Fetch groups error : ", error);
         return null;
         }
     }

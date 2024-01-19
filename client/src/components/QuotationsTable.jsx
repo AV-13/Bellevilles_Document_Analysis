@@ -33,7 +33,7 @@ const QuotationsTable = ({ quotations = [] }) => {
                 setGroups(response.data);
             })
             .catch(error => {
-                console.log("Fetch groups error : ", error);
+                console.error("Fetch groups error : ", error);
                 throw error;
             });
     }
