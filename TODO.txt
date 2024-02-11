@@ -1,5 +1,4 @@
-EDIT des devis
-
-Popup avec état des requêtes
-
-Sélection d'un groupe existant ou création d'un nouveau
+npx nodemon index.js       
+cd client
+npm start
+test test

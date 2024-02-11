@@ -2,7 +2,7 @@ import './Modal.css';
 import React, { forwardRef, useEffect } from 'react';
 import { ImCross } from "react-icons/im";
 
-const Modal = forwardRef(({ show, children, onClose, modalType }, modalRef) => {
+const Modal = forwardRef(({ show, children, onClose, modalType, extraClass = "" }, modalRef) => {
     const handleKeyDown = (event) => {
         if (event.keyCode === 27) { // 27 est le code pour la touche Échap
             onClose();
@@ -27,7 +27,7 @@ const Modal = forwardRef(({ show, children, onClose, modalType }, modalRef) => {
 
     return (
         <div className="modal-backdrop" onClick={handleBackdropClick}>
-            <div className="modal" ref={modalRef}>
+            <div className={`modal ${extraClass}`} ref={modalRef}>
                 {children}
                 
             </div>

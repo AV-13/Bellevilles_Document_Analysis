@@ -130,7 +130,7 @@ const QuotationsTable = ({ quotations = [] }) => {
 
         if (fileExtension === 'pdf') {
             // Si le fichier est un PDF, utilisez la balise embed
-            return <embed src={fileUrl} type="application/pdf" className="img-container-preview" />;
+            return <embed src={fileUrl} type="application/pdf" className="img-container-preview" style={{width: "100%"}}/>;
         } else {
             // Pour les autres types (images), utilisez la balise img
             return <img src={fileUrl} alt="Preview" className="img-container-preview" />;
@@ -378,7 +378,7 @@ const QuotationsTable = ({ quotations = [] }) => {
                   activeClassName={'active'}
                   renderOnZeroPageCount={null}
                 />
-            {showModal && <Modal ref={modalRef} show={showModal} modalType={modalType} onClose={() => setShowModal(false)}>
+            {showModal && <Modal ref={modalRef} show={showModal} modalType={modalType} extraClass={content?.type === "img" ? "modal-img" : "modal-pdf"} onClose={() => setShowModal(false)}>
                 {content}
             </Modal>}
         </>

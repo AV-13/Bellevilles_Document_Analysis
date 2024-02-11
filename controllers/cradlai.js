@@ -17,8 +17,8 @@ async function useCradl(fileUrl) {
 
     const prediction = await client.createPrediction(
       documentResponse.documentId,
-      // 'las:model:fab26165f910442caa01674f87a463a1'
-      'las:model:3d5096b8ef0846bc849dd8bfc38adf65'
+      'las:model:fab26165f910442caa01674f87a463a1'
+      // 'las:model:3d5096b8ef0846bc849dd8bfc38adf65'
     );
       // dev model 'las:model:fab26165f910442caa01674f87a463a1'
       // test model 'las:model:3d5096b8ef0846bc849dd8bfc38adf65'
